@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="sq">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Infinity Production — Dasma juaj, përgjegjësia jonë</title>
+  <meta name="description" content="Infinity Production — shërbime produksioni për dasma: kamerë, aparat, dron, kran, gimbal, fotosesion, love-story, USB, printime." />
+  <style>
+    :root{
+      --bg:#121316; /* shumë errët, por jo i zi tërësisht */
+      --accent1:#ff7a66;
+      --accent2:#8b5cf6;
+      --muted:#a8b0b6;
+      --glass:rgba(255,255,255,0.03);
+      --card:rgba(255,255,255,0.04);
+      --maxw:1200px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system,'Segoe UI',Roboto,Arial;color:#fff;background:var(--bg)}
+
+    /* HERO - full screen video + centered text */
+    .hero{position:relative;height:100vh;min-height:680px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    video.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(0.45) contrast(1.05)}
+    .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,12,14,0.2),rgba(6,8,10,0.6))}
+
+    .hero-inner{position:relative;z-index:30;text-align:center;padding:24px;max-width:980px}
+    .tag{display:inline-block;padding:8px 14px;border-radius:999px;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#0b0b0b;font-weight:800;margin-bottom:18px}
+    h1{font-size:44px;margin:0 0 12px;letter-spacing:0.2px}
+    p.lead{margin:0 auto 18px;color:var(--muted);font-size:18px;max-width:760px}
+    .cta{display:flex;gap:12px;justify-content:center;margin-top:18px}
+    .btn{padding:12px 18px;border-radius:12px;border:0;font-weight:800;cursor:pointer}
+    .btn.primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#081018}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+
+    /* top nav */
+    header{position:fixed;left:0;right:0;top:18px;z-index:60;display:flex;justify-content:center}
+    .nav{max-width:var(--maxw);width:100%;display:flex;align-items:center;justify-content:space-between;padding:6px 20px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:900}
+    nav a{color:rgba(255,255,255,0.9);text-decoration:none;margin-left:12px;font-weight:700;opacity:0.95}
+
+    /* Main content sections */
+    main{background:linear-gradient(180deg,rgba(18,19,20,0.4),transparent);padding:60px 24px 120px;margin-top:-40px}
+    .container{max-width:var(--maxw);margin:0 auto}
+
+    /* SERVICES */
+    .services{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:6px}
+    .svc{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,12,0.6);backdrop-filter:blur(6px)}
+    .svc h4{margin:0 0 6px}
+    .svc p{margin:0;color:var(--muted)}
+    .svc .icon{width:56px;height:56px;border-radius:10px;background:linear-gradient(90deg,var(--accent2),var(--accent1));display:flex;align-items:center;justify-content:center;font-weight:900;margin-bottom:12px}
+
+    /* GALLERY */
+    .gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}
+    .gallery img{width:100%;height:220px;object-fit:cover;border-radius:10px;cursor:pointer;transition:transform .5s}
+    .gallery img:hover{transform:scale(1.04)}
+    @media(max-width:1100px){.gallery{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:760px){.gallery{grid-template-columns:repeat(2,1fr)};h1{font-size:32px}}
+
+    /* Offer / extras */
+    .extras{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+    .chip{background:rgba(255,255,255,0.03);padding:10px 12px;border-radius:999px;font-weight:700;color:var(--muted)}
+
+    /* lightbox */
+    .lightbox{position:fixed;inset:0;background:rgba(3,4,6,0.8);display:none;align-items:center;justify-content:center;z-index:100}
+    .lightbox img{max-width:92%;max-height:86%;border-radius:10px}
+    .lb-close{position:absolute;top:22px;right:22px;color:#fff;font-size:26px;background:transparent;border:0}
+
+    footer{color:var(--muted);text-align:center;margin-top:40px;padding:40px 0}
+
+    /* subtle entrance animations */
+    .fade{animation:fadeUp .7s cubic-bezier(.2,.9,.2,1) both}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+header.scrolled nav a {
+  color: black; /* ose ngjyrë tjetër që duket mirë mbi gold */
+}
+
+header.scrolled .logo img {
+  filter: brightness(0) invert(0); /* nëse duhen rregullime për logo */
+}
+
+    
+.logo {
+  width:130px;
+  height:130px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden; /* për imazhet që dalin jashtë */
+  background:none; /* ose mund ta mbash gradient */
+}
+
+header.scrolled {
+  background: rgb(180, 166, 86);
+  transition: background 1.5s ease;
+}
+
+header {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0; /* ndryshuar nga 18px në 0 */
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <div class="brand">
+        <div class="logo">
+  <img src="Logo Infinity.png" alt="Infinity Production" style="width:100%;height:100%;object-fit:contain;">
+</div>
+
+        <div>
+
+        </div>
+      </div>
+      <nav aria-label="Main navigation">
+        <a href="#services">Sherbimet</a>
+        <a href="#gallery">Galeria</a>
+        <a href="#contact">Kontakti</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <!-- vendose videon tende ne folderin /videos dhe emertoje couple.mp4 ose jep link te hostuar -->
+    <video class="bg" autoplay muted loop playsinline poster="0057-_dianenicolephoto-Diane-Clifford-1.webp">
+      <source src="0057-_dianenicolephoto-Diane-Clifford-1.webp" type="video/mp4">
+      <!-- fallback: use a hosted mp4 link here -->
+    </video>
+
+    <div class="hero-inner fade">
+      <h2>Dasma juaj — përgjegjësia jonë</h2>
+      <p class="lead">Ne kapim momentet më të sinqerta te Dasmes suaj. Le të tregohet historia juaj.</p>
+      <div class="cta">
+        <button class="btn primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Bëje Rezervimin</button>
+        <button class="btn ghost" onclick="document.getElementById('gallery').scrollIntoView({behavior:'smooth'})">Shiko Galerinë</button>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <div class="container">
+      <section id="services">
+        <h2>Shërbimet tona</h2>
+        <div class="services">
+
+        <div class="svc fade">
+            <div class="icon">
+                <img src="Aparati.png" alt="Kamera & Filmim" style="width:100%;height:100%;object-fit:contain;border-radius:10px;">
+            </div>
+            <h4>APARAT</h4>
+            <p>Kapim cdo fotografi qe eshte e mundur.</p>
+        </div>
+
+        <div class="svc fade">
+            <div class="icon">
+                <img src="Kamera.png" alt="Kamera & Filmim" style="width:100%;height:100%;object-fit:contain;border-radius:10px;">
+            </div>
+            <h4>KAMER</h4>
+            <p>Kapim cdo moment levizes qe eshte e mundur.</p>
+        </div>
+
+        <div class="svc fade">
+            <div class="icon">
+                <img src="Krani.png" alt="Kamera & Filmim" style="width:100%;height:100%;object-fit:contain;border-radius:10px;">
+            </div>
+            <h4>KRAN</h4>
+            <p>Kapim cdo moment levizes nga lart qe eshte e mundur.</p>
+        </div>
+
+
+        <div class="svc fade">
+            <div class="icon">
+                <img src="Droni.png" alt="Kamera & Filmim" style="width:100%;height:100%;object-fit:contain;border-radius:10px;">
+            </div>
+            <h4>DRON</h4>
+            <p>Kapim cdo moment te vecante nga pamja e qiellit.</p>
+        </div>
+
+
+        <div class="svc fade">
+            <div class="icon">
+                <img src="217e4161ba59686dd4b0ef051abb3344@origin.png" alt="Kamera & Filmim" style="width:100%;height:100%;object-fit:contain;border-radius:10px;">
+            </div>
+            <h4>GIMBAL</h4>
+            <p>Kapim cdo moment levizes te ahengut tuaj.</p>
+        </div>
+
+
+        <div class="svc fade">
+            <div class="icon">
+                <img src="usb.png" alt="Kamera & Filmim" style="width:100%;height:100%;object-fit:contain;border-radius:10px;">
+            </div>
+            <h4>USB</h4>
+            <p>Gjithe kujtimi juaj do ngelet ne nje teknologji te vogel.</p>
+        </div>
+
+
+        <div class="svc fade">
+            <div class="icon">
+                <img style="width: 130%;" src="propo.png" alt="Kamera & Filmim" style="width:100%;height:100%;object-fit:contain;border-radius:10px;">
+            </div>
+            <h4>LOVE - STORY</h4>
+            <p>Ju krijojme nje film te shkurter dashurie.</p>
+        </div>
+
+        <div class="svc fade">
+            <div class="icon">
+                <img src="weding.png" alt="Kamera & Filmim" style="width:100%;height:100%;object-fit:contain;border-radius:10px;">
+            </div>
+            <h4>FOTOSESSION</h4>
+            <p>Shkrepim fotografi qe do shikohen gjithe jetes tuaj.</p>
+        </div>
+
+
+
+
+  
+
+
+
+
+
+        </div>
+      </section>
+
+      <section id="gallery" style="margin-top:28px">
+        <h2>Galeria — Momentet e çiftave</h2>
+        <div class="gallery">
+          <img src="f1.jpeg" alt="Couple 1" onclick="openLB(this.src)"/>
+          <img src="f2.jpg" alt="Couple 2" onclick="openLB(this.src)"/>
+          <img src="f3.jpg" alt="Couple 3" onclick="openLB(this.src)"/>
+          <img src="f4.jpg" alt="Couple 4" onclick="openLB(this.src)"/>
+          <img src="f6.jpeg" alt="Couple 6" onclick="openLB(this.src)"/>
+
+        </div>
+      </section>
+<section id="contact" style="margin-top:28px">
+  <h2>Kontakto / Rezervo</h2>
+  <div style="display:grid;grid-template-columns:1fr 320px;gap:12px;margin-top:12px">
+    <aside style="background:var(--card);padding:16px;border-radius:12px; width: 100%;">
+      <h4>Na kontaktoni</h4>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:10px">
+
+        <!-- Telefon -->
+        <a href="tel:+38972722060" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--muted)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M3.654 1.328a.678.678 0 0 1 .738-.058l2.25 1.125a.678.678 0 0 1 .33.573v2.25a.678.678 0 0 1-.195.482l-1.125 1.125a11.17 11.17 0 0 0 4.516 4.516l1.125-1.125a.678.678 0 0 1 .482-.195h2.25a.678.678 0 0 1 .573.33l1.125 2.25a.678.678 0 0 1-.058.738l-1.518 1.518a1.745 1.745 0 0 1-1.746.451c-2.12-.844-4.242-2.576-6.365-4.7-2.123-2.123-3.856-4.245-4.7-6.364a1.745 1.745 0 0 1 .45-1.746L3.654 1.328z"/>
+          </svg>
+          <span>072 722 060</span>
+        </a>
+
+        <!-- Email -->
+        <a href="mailto:jeton.elezi01@gmail.com" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--muted)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383l-6.29 3.775a.5.5 0 0 1-.42 0L1 5.383V12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5.383z"/>
+          </svg>
+          <span>jeton.elezi01@gmail.com</span>
+        </a>
+
+        <!-- Instagram -->
+        <a href="https://www.instagram.com/infinity_production.mk/?utm_source=ig_web_button_share_sheet" target="_blank" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--muted)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 0C5.74 0 5.4.01 4.61.07 3.82.14 3.3.32 2.89.53c-.42.2-.77.46-1.12.81-.36.36-.61.7-.81 1.12-.21.41-.39.93-.46 1.72C.01 5.4 0 5.74 0 8s.01 2.6.07 3.39c.07.79.25 1.31.46 1.72.2.42.46.77.81 1.12.36.36.7.61 1.12.81.41.21.93.39 1.72.46C5.4 15.99 5.74 16 8 16s2.6-.01 3.39-.07c.79-.07 1.31-.25 1.72-.46.42-.2.77-.46 1.12-.81.36-.36.61-.7.81-1.12.21-.41.39-.93.46-1.72.06-.79.07-1.13.07-3.39s-.01-2.6-.07-3.39c-.07-.79-.25-1.31-.46-1.72-.2-.42-.46-.77-.81-1.12-.36-.36-.7-.61-1.12-.81-.41-.21-.93-.39-1.72-.46C10.6.01 10.26 0 8 0zm0 1.44c2.22 0 2.49.01 3.37.05.81.04 1.25.18 1.54.3.39.17.67.37.97.67.3.3.5.58.67.97.12.29.26.73.3 1.54.04.88.05 1.15.05 3.37s-.01 2.49-.05 3.37c-.04.81-.18 1.25-.3 1.54a2.54 2.54 0 0 1-.67.97c-.3.3-.58.5-.97.67-.29.12-.73.26-1.54.3-.88.04-1.15.05-3.37.05s-2.49-.01-3.37-.05c-.81-.04-1.25-.18-1.54-.3a2.54 2.54 0 0 1-.97-.67c-.3-.3-.5-.58-.67-.97-.12-.29-.26-.73-.3-1.54C1.45 10.49 1.44 10.22 1.44 8s.01-2.49.05-3.37c.04-.81.18-1.25.3-1.54.17-.39.37-.67.67-.97.3-.3.58-.5.97-.67.29-.12.73-.26 1.54-.3.88-.04 1.15-.05 3.37-.05zM8 3.88a4.12 4.12 0 1 0 0 8.24 4.12 4.12 0 0 0 0-8.24zm0 6.8a2.68 2.68 0 1 1 0-5.36 2.68 2.68 0 0 1 0 5.36zm4.25-6.93a.96.96 0 1 1-1.92 0 .96.96 0 0 1 1.92 0z"/>
+          </svg>
+          <span>@infinity_production.mk</span>
+        </a>
+
+        <!-- Facebook -->
+        <a href="https://www.facebook.com/username/" target="_blank" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--muted)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8.94 8.15H7.35V16H4.17V8.15H2.81V5.71h1.36V4.12c0-1.35.73-3.12 3.12-3.12h2.29v2.44H8.83c-.35 0-.84.17-.84.92v1.37h2.47l-.31 2.44z"/>
+          </svg>
+          <span>Facebook</span>
+        </a>
+
+      </div>
+      <p style="color:var(--muted);margin-top:12px">Na dërgoni datën dhe kërkesat — ne do t'ju ofrojmë paketën më të mirë dhe një ofertë personale.</p>
+    </aside>
+  </div>
+</section>
+
+
+
+      <footer>
+        <div>© <span id="year"></span> Infinity Production — Dasma juaj, përgjegjësia jonë.</div>
+      </footer>
+    </div>
+  </main>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox">
+    <button class="lb-close" onclick="closeLB()">&times;</button>
+    <img id="lbimg" src="" alt="" />
+  </div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    function openLB(src){
+      const lb = document.getElementById('lightbox');
+      document.getElementById('lbimg').src = src; lb.style.display = 'flex';
+    }
+    function closeLB(){document.getElementById('lightbox').style.display='none';document.getElementById('lbimg').src='';}
+
+    function submitContact(e){e.preventDefault();const n=document.getElementById('cname').value.trim();const i=document.getElementById('cinfo').value.trim();const m=document.getElementById('cmsg').value.trim();if(!n||!i||!m) return alert('Plotësoni të gjitha fushat.');alert('Faleminderit '+n+'! Mesazhi u dërgua.');e.target.reset();}
+ 
+ 
+ 
+ window.addEventListener('scroll', function() {
+  const header = document.querySelector('header');
+  if (window.scrollY > 50) { // ndrysho 50 sipas nevojës
+    header.classList.add('scrolled');
+  } else {
+    header.classList.remove('scrolled');
+  }
+});
+ 
+ 
+ </script>
+
+</body>
+</html>
