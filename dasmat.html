@@ -70,8 +70,13 @@
         .notes { background: #eee; padding: 10px; border-radius: 4px; margin-top: 10px; font-size: 0.9rem; font-style: italic; }
         .countdown { color: #d84315; font-weight: 600; margin-top: 12px; font-size: 1rem; }
         
-        .btn-delete { background-color: #ff4757; color: white; border: none; padding: 8px 15px; font-size: 0.85rem; border-radius: 4px; margin-left: 15px; cursor: pointer; transition: 0.3s; }
+        .btn-delete { background-color: #ff4757; color: white; border: none; padding: 8px 15px; font-size: 0.85rem; border-radius: 4px; cursor: pointer; transition: 0.3s; width: 100%;}
         .btn-delete:hover { background-color: #ff6b81; }
+
+        .btn-edit { background-color: #3498db; color: white; border: none; padding: 8px 15px; font-size: 0.85rem; border-radius: 4px; cursor: pointer; transition: 0.3s; width: 100%; margin-bottom: 5px;}
+        .btn-edit:hover { background-color: #2980b9; }
+
+        .admin-actions { margin-left: 20px; display: flex; flex-direction: column; min-width: 100px;}
 
         /* Login Screen */
         #login-screen {
@@ -87,6 +92,20 @@
         }
         .login-box h2 { margin-bottom: 20px; font-family: 'Playfair Display', serif; color: #1a1a1a; }
         .login-box input { margin-bottom: 20px; text-align: center; font-size: 1.2rem; letter-spacing: 2px; }
+
+        /* MODAL PËR MODIFIKIM */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); z-index: 100;
+            display: none; align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px;
+            max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .flex-btns { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-cancel { background: #888; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; flex: 1; font-weight: 600;}
+        .btn-cancel:hover { background: #666; }
 
         /* Ndarjet e fshehura fillimisht */
         #app-screen, #view-section, #add-section { display: none; }
@@ -182,6 +201,61 @@
         </footer>
     </div>
 
+    <div id="edit-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 20px; font-size: 1.4rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Modifiko Terminin</h2>
+            <form id="edit-form">
+                <input type="hidden" id="edit-index">
+                
+                <div class="form-group">
+                    <label>Çifti (ose Emri i Klientit)</label>
+                    <input type="text" id="edit-cifti" required>
+                </div>
+                <div class="form-group">
+                    <label>Lloji i Eventit</label>
+                    <select id="edit-lloji" required>
+                        <option value="Dasëm">Dasëm (Komplet)</option>
+                        <option value="Fejesë">Fejesë</option>
+                        <option value="Kanagjegj">Kanagjegj</option>
+                        <option value="Banket">Banket</option>
+                        <option value="Marrja e Nuses">Marrja e Nuses</option>
+                        <option value="Nata e Dhandrisë">Nata e Dhandrisë</option>
+                        <option value="Tjetër">Tjetër</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Data dhe Ora</label>
+                    <input type="datetime-local" id="edit-data-ora" required>
+                </div>
+                <div class="form-group">
+                    <label>Lokacioni</label>
+                    <input type="text" id="edit-lokacioni" required>
+                </div>
+                <div class="form-group">
+                    <label>Pajisjet</label>
+                    <input type="text" id="edit-pajisjet" required>
+                </div>
+                <div class="form-group">
+                    <label>Çmimi Total (€)</label>
+                    <input type="number" id="edit-cmimi" required>
+                </div>
+                <div class="form-group">
+                    <label>Stafi (Punëtorët)</label>
+                    <input type="text" id="edit-puntoret" required>
+                </div>
+                <div class="form-group">
+                    <label>Shënime Shtesë</label>
+                    <textarea id="edit-pershkrimi" rows="2"></textarea>
+                </div>
+                
+                <div class="flex-btns">
+                    <button type="submit" class="btn-primary" style="flex: 2;">Ruaj Ndryshimet</button>
+                    <button type="button" class="btn-cancel" onclick="mbyllModalin()">Anulo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // --- 1. MENAXHIMI I HYRJES (LOGIN) ---
         let currentRole = null; 
@@ -255,7 +329,7 @@
             }
         }
 
-        // --- 3. LOGJIKA E TERMINEVE (Storage, Shto, Fshij) ---
+        // --- 3. LOGJIKA E TERMINEVE ---
         let terminet = JSON.parse(localStorage.getItem('terminetDasma')) || [];
 
         function merrKojenEMbetur(dataTerminit) {
@@ -302,9 +376,14 @@
                 const shenimeHtml = termin.pershkrimi ? `<div class="notes">📝 <strong>Shënime:</strong> ${termin.pershkrimi}</div>` : '';
                 const isNext = index === 0 ? '<span style="background: #d4af37; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; vertical-align: middle;">🔥 Termini i Radhës</span>' : '';
 
-                const deleteBtn = currentRole === 'admin' ? `<button class="btn-delete" onclick="fshijTermin(${index})">Fshij</button>` : '';
+                // Butonat Edit & Delete vetëm për Admin
+                const adminActions = currentRole === 'admin' ? `
+                    <div class="admin-actions">
+                        <button class="btn-edit" onclick="hapModifikimin(${index})">Modifiko</button>
+                        <button class="btn-delete" onclick="fshijTermin(${index})">Fshij</button>
+                    </div>
+                ` : '';
 
-                // Shtohet lloji, nëse është termin i vjetër pa lloj vendoset 'Pa specifikuar'
                 const llojiEventit = termin.lloji || 'Pa specifikuar';
 
                 const div = document.createElement('div');
@@ -323,16 +402,17 @@
                         ${shenimeHtml}
                         <p class="countdown">⏳ ${countdown}</p>
                     </div>
-                    ${deleteBtn}
+                    ${adminActions}
                 `;
                 listContainer.appendChild(div);
             });
         }
 
+        // Shtimi i Terminit
         document.getElementById('termin-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const cifti = document.getElementById('cifti').value;
-            const lloji = document.getElementById('lloji').value; // Fusha e re
+            const lloji = document.getElementById('lloji').value;
             const dataOra = document.getElementById('data-ora').value;
             const lokacioni = document.getElementById('lokacioni').value;
             const pajisjet = document.getElementById('pajisjet').value;
@@ -348,6 +428,7 @@
             ndryshoFaqen('view'); 
         });
 
+        // Fshirja e Terminit
         window.fshijTermin = function(index) {
             if(confirm("A je i sigurt që dëshiron ta fshish këtë termin?")) {
                 terminet.splice(index, 1);
@@ -356,6 +437,53 @@
             }
         };
 
+        // --- 4. FUNKSIONET E MODIFIKIMIT ---
+        window.hapModifikimin = function(index) {
+            const termin = terminet[index];
+            
+            // Mbushim fushat me të dhënat ekzistuese
+            document.getElementById('edit-index').value = index;
+            document.getElementById('edit-cifti').value = termin.cifti;
+            document.getElementById('edit-lloji').value = termin.lloji || 'Dasëm';
+            document.getElementById('edit-data-ora').value = termin.dataOra;
+            document.getElementById('edit-lokacioni').value = termin.lokacioni;
+            document.getElementById('edit-pajisjet').value = termin.pajisjet;
+            document.getElementById('edit-cmimi').value = termin.cmimi;
+            document.getElementById('edit-puntoret').value = termin.puntoret;
+            document.getElementById('edit-pershkrimi').value = termin.pershkrimi || '';
+            
+            // Shfaqim modalin
+            document.getElementById('edit-modal').style.display = 'flex';
+        };
+
+        window.mbyllModalin = function() {
+            document.getElementById('edit-modal').style.display = 'none';
+        };
+
+        // Ruajtja e modifikimeve
+        document.getElementById('edit-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const index = document.getElementById('edit-index').value;
+            
+            // Përditësojmë objektin në array
+            terminet[index] = {
+                cifti: document.getElementById('edit-cifti').value,
+                lloji: document.getElementById('edit-lloji').value,
+                dataOra: document.getElementById('edit-data-ora').value,
+                lokacioni: document.getElementById('edit-lokacioni').value,
+                pajisjet: document.getElementById('edit-pajisjet').value,
+                cmimi: document.getElementById('edit-cmimi').value,
+                puntoret: document.getElementById('edit-puntoret').value,
+                pershkrimi: document.getElementById('edit-pershkrimi').value
+            };
+            
+            // Ruajmë në localStorage dhe mbyllim
+            localStorage.setItem('terminetDasma', JSON.stringify(terminet));
+            mbyllModalin();
+            shfaqTerminet(); // Rifreskojmë listën vizualisht
+        });
+
+        // Rifreskimi i kohës
         setInterval(() => {
             if (document.getElementById('view-section').style.display === 'block') {
                 shfaqTerminet();
