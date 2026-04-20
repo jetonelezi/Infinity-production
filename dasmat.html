@@ -305,13 +305,25 @@
             return `⏳ Edhe ${dite} ditë, ${ore} orë`;
         }
 
-        window.zbuloCmimin = function(el, pr) {
-            if(prompt("Fjalekalimi:") === "jeton123") {
-                const span = el.querySelector('.cmimi-vlere');
-                span.innerText = pr + " €";
-                span.style.color = "#27ae60";
-            }
-        };
+       window.zbuloCmimin = function(el, pr) {
+    // Kërkojmë fjalëkalimin
+    const pass = prompt("Fjalëkalimi:");
+    
+    if (pass === "jeton123") {
+        // Gjejmë span-in brenda elementit ku kemi klikuar
+        const span = el.querySelector('.cmimi-vlere');
+        
+        if (span) {
+            span.innerText = pr + " €";
+            span.style.color = "#27ae60"; // Ngjyrë e gjelbër kur zbulohet
+        } else {
+            // Nëse për ndonjë arsye span-i nuk gjendet, e shkruajmë direkt në paragraf
+            el.innerHTML = `💶: <span class="cmimi-vlere" style="color: #27ae60;">${pr} €</span>`;
+        }
+    } else if (pass !== null) {
+        alert("I pasaktë!");
+    }
+};
 
         document.getElementById('termin-form').addEventListener('submit', (e) => {
             e.preventDefault();
