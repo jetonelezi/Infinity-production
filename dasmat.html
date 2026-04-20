@@ -43,10 +43,10 @@
         
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
-        .form-group input, .form-group textarea { 
+        .form-group input, .form-group select, .form-group textarea { 
             width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; 
         }
-        .form-group input:focus, .form-group textarea:focus { 
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { 
             outline: none; border-color: #d4af37; box-shadow: 0 0 5px rgba(212, 175, 55, 0.3); 
         }
         
@@ -129,6 +129,19 @@
                         <input type="text" id="cifti" placeholder="psh. Ejup & Semavije" required>
                     </div>
                     <div class="form-group">
+                        <label>Lloji i Eventit</label>
+                        <select id="lloji" required>
+                            <option value="" disabled selected>Zgjidh llojin...</option>
+                            <option value="Dasëm">Dasëm (Komplet)</option>
+                            <option value="Fejesë">Fejesë</option>
+                            <option value="Kanagjegj">Kanagjegj</option>
+                            <option value="Banket">Banket</option>
+                            <option value="Marrja e Nuses">Marrja e Nuses</option>
+                            <option value="Nata e Dhandrisë">Nata e Dhandrisë</option>
+                            <option value="Tjetër">Tjetër</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label>Data dhe Ora</label>
                         <input type="datetime-local" id="data-ora" required>
                     </div>
@@ -171,7 +184,7 @@
 
     <script>
         // --- 1. MENAXHIMI I HYRJES (LOGIN) ---
-        let currentRole = null; // 'viewer' ose 'admin'
+        let currentRole = null; 
 
         function handleEnter(e) {
             if (e.key === 'Enter') kontrolloHyrjen();
@@ -196,7 +209,6 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app-screen').style.display = 'block';
             
-            // Nëse futet si admin, fshij ikonën e drynit te menyja Shto Termin
             if(currentRole === 'admin') {
                 document.getElementById('nav-add').innerHTML = "Shto Termin";
             }
@@ -211,31 +223,28 @@
             document.getElementById('login-error').style.display = 'none';
             document.getElementById('app-screen').style.display = 'none';
             document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('nav-add').innerHTML = 'Shto Termin <span style="font-size:0.7rem;">🔒</span>';
         }
 
         // --- 2. MENAXHIMI I FAQEVE (ROUTING) ---
         function ndryshoFaqen(faqja) {
-            // Kontrollo sigurinë nëse dikush do të shkojë te faqja 'add'
             if (faqja === 'add' && currentRole !== 'admin') {
                 const pass = prompt("Kjo faqe është vetëm për menaxhim.\nShëno fjalëkalimin e adminit:");
                 if (pass === 'jeton555!') {
                     currentRole = 'admin';
-                    document.getElementById('nav-add').innerHTML = "Shto Termin"; // Hiq drynin
+                    document.getElementById('nav-add').innerHTML = "Shto Termin"; 
                 } else {
                     alert("Fjalëkalim i pasaktë!");
-                    return; // Ndalo kalimin
+                    return; 
                 }
             }
 
-            // Fshij klasen 'active' nga te dy butonat
             document.getElementById('nav-view').classList.remove('active');
             document.getElementById('nav-add').classList.remove('active');
 
-            // Fshih te dyja seksionet
             document.getElementById('view-section').style.display = 'none';
             document.getElementById('add-section').style.display = 'none';
 
-            // Shfaq atë që u kërkua
             if (faqja === 'view') {
                 document.getElementById('view-section').style.display = 'block';
                 document.getElementById('nav-view').classList.add('active');
@@ -261,7 +270,6 @@
             return `Kanë mbetur edhe: ${dite} ditë dhe ${ore} orë`;
         }
 
-        // Fshehja/Zbulimi i çmimit (Mbetet njësoj me jeton123)
         window.zbuloCmimin = function(element, cmimiVertet) {
             const span = element.querySelector('.cmimi-vlere');
             if (span.innerText !== "***") return; 
@@ -294,8 +302,10 @@
                 const shenimeHtml = termin.pershkrimi ? `<div class="notes">📝 <strong>Shënime:</strong> ${termin.pershkrimi}</div>` : '';
                 const isNext = index === 0 ? '<span style="background: #d4af37; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; vertical-align: middle;">🔥 Termini i Radhës</span>' : '';
 
-                // Butoni i fshirjes shfaqet vetëm nëse është admin
                 const deleteBtn = currentRole === 'admin' ? `<button class="btn-delete" onclick="fshijTermin(${index})">Fshij</button>` : '';
+
+                // Shtohet lloji, nëse është termin i vjetër pa lloj vendoset 'Pa specifikuar'
+                const llojiEventit = termin.lloji || 'Pa specifikuar';
 
                 const div = document.createElement('div');
                 div.className = 'termin-item';
@@ -304,6 +314,7 @@
                 div.innerHTML = `
                     <div class="termin-info">
                         <h3>${termin.cifti} ${isNext}</h3>
+                        <p>🎉 <strong>Lloji:</strong> ${llojiEventit}</p>
                         <p>📅 <strong>${dataEFormatizuar}</strong></p>
                         <p>📍 ${termin.lokacioni}</p>
                         <p>🎥 ${termin.pajisjet}</p>
@@ -321,6 +332,7 @@
         document.getElementById('termin-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const cifti = document.getElementById('cifti').value;
+            const lloji = document.getElementById('lloji').value; // Fusha e re
             const dataOra = document.getElementById('data-ora').value;
             const lokacioni = document.getElementById('lokacioni').value;
             const pajisjet = document.getElementById('pajisjet').value;
@@ -328,12 +340,12 @@
             const puntoret = document.getElementById('puntoret').value;
             const pershkrimi = document.getElementById('pershkrimi').value;
 
-            terminet.push({ cifti, dataOra, lokacioni, pajisjet, cmimi, puntoret, pershkrimi });
+            terminet.push({ cifti, lloji, dataOra, lokacioni, pajisjet, cmimi, puntoret, pershkrimi });
             localStorage.setItem('terminetDasma', JSON.stringify(terminet));
             
             this.reset();
             alert("Termini u ruajt me sukses!");
-            ndryshoFaqen('view'); // Kaloje automatikisht te lista pasi ta shtoje
+            ndryshoFaqen('view'); 
         });
 
         window.fshijTermin = function(index) {
@@ -344,7 +356,6 @@
             }
         };
 
-        // Rifresko kohen cdo minut
         setInterval(() => {
             if (document.getElementById('view-section').style.display === 'block') {
                 shfaqTerminet();
