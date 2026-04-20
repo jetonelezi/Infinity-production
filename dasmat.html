@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Infinity Production - Terminet</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+    <title>Sistemi i Termineve - Infinity Production</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
@@ -12,48 +12,131 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background-color: #f4f7f6; color: #333; }
-        header { background-color: #1a1a1a; color: #d4af37; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 50; }
-        .logo-text { font-family: 'Playfair Display', serif; font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
-        nav ul { list-style: none; display: flex; gap: 20px; align-items: center;}
-        nav ul li a { color: #fff; text-decoration: none; font-size: 0.95rem; cursor: pointer; transition: color 0.3s; padding: 5px 10px; }
+        
+        /* Navigimi */
+        header { 
+            background-color: #1a1a1a; 
+            color: #d4af37; 
+            padding: 15px 30px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+        }
+        .logo-text { font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
+        
+        nav ul { list-style: none; display: flex; gap: 20px; }
+        nav ul li a { 
+            color: #fff; 
+            text-decoration: none; 
+            font-size: 0.95rem; 
+            cursor: pointer; 
+            transition: color 0.3s;
+            padding: 5px 10px;
+        }
         nav ul li a:hover, nav ul li a.active { color: #d4af37; border-bottom: 2px solid #d4af37; }
-        .btn-logout { background: #ff4757; color: white; border: none; padding: 6px 15px; border-radius: 4px; cursor: pointer; font-weight: 600;}
+        .btn-logout { background: #ff4757; color: white; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer; }
+        .btn-logout:hover { background: #ff6b81; }
+
+        /* Kontejneri Kryesor */
         .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
-        .card { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px;}
+        
+        /* Karta & Format */
+        .card { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .card h2 { margin-bottom: 20px; font-size: 1.4rem; color: #1a1a1a; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
+        
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; }
-        button.btn-primary { background-color: #d4af37; color: #fff; border: none; padding: 15px; width: 100%; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; }
-        .termin-item { background: #fafafa; border-left: 5px solid #d4af37; padding: 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        .price { color: #555; font-weight: 600; cursor: pointer; background: #f0f0f0; padding: 4px 8px; border-radius: 4px; }
-        .countdown { color: #d84315; font-weight: 600; background: #ffebee; padding: 5px 10px; border-radius: 20px; display: inline-block; margin-top: 10px;}
-        .admin-actions { display: flex; flex-direction: column; gap: 8px; min-width: 100px;}
-        .btn-edit { background: #3498db; color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer;}
-        .btn-delete { background: #ff4757; color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer;}
-        #login-screen { height: 100vh; display: flex; align-items: center; justify-content: center; background: #1a1a1a; }
-        .login-box { background: white; padding: 40px; border-radius: 12px; width: 350px; text-align: center; border-top: 6px solid #d4af37; }
+        .form-group input, .form-group textarea, .form-group select { 
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; 
+        }
+        .form-group input:focus, .form-group textarea:focus { 
+            outline: none; border-color: #d4af37; box-shadow: 0 0 5px rgba(212, 175, 55, 0.3); 
+        }
+        
+        button.btn-primary { 
+            background-color: #d4af37; color: #fff; border: none; padding: 12px 20px; 
+            width: 100%; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.3s; 
+        }
+        button.btn-primary:hover { background-color: #b8962e; }
+        
+        /* Lista e Termineve */
+        .termin-list { display: flex; flex-direction: column; gap: 15px; }
+        .termin-item { background: #fafafa; border-left: 5px solid #d4af37; padding: 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: flex-start; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .termin-info { flex: 1; }
+        .termin-info h3 { margin-bottom: 8px; font-size: 1.2rem; color: #1a1a1a; }
+        .termin-info p { font-size: 0.95rem; color: #555; margin-bottom: 5px; }
+        
+        .price { color: #555; font-weight: 600; cursor: pointer; display: inline-block; padding: 2px 5px; border-radius: 4px; transition: background 0.2s; }
+        .price:hover { background: #e0e0e0; }
+        .cmimi-vlere { color: #d4af37; letter-spacing: 2px; }
+        
+        .notes { background: #eee; padding: 10px; border-radius: 4px; margin-top: 10px; font-size: 0.9rem; font-style: italic; }
+        .countdown { color: #d84315; font-weight: 600; margin-top: 12px; font-size: 1rem; }
+        
+        .btn-delete { background-color: #ff4757; color: white; border: none; padding: 8px 15px; font-size: 0.85rem; border-radius: 4px; cursor: pointer; transition: 0.3s; width: 100%;}
+        .btn-delete:hover { background-color: #ff6b81; }
+
+        .btn-edit { background-color: #3498db; color: white; border: none; padding: 8px 15px; font-size: 0.85rem; border-radius: 4px; cursor: pointer; transition: 0.3s; width: 100%; margin-bottom: 5px;}
+        .btn-edit:hover { background-color: #2980b9; }
+
+        .admin-actions { margin-left: 20px; display: flex; flex-direction: column; min-width: 100px;}
+
+        /* Login Screen */
+        #login-screen {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1920&q=80') center/cover;
+        }
+        .login-box {
+            background: white; padding: 40px; border-radius: 10px; width: 350px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-top: 5px solid #d4af37;
+        }
+        .login-box h2 { margin-bottom: 20px; font-family: 'Playfair Display', serif; color: #1a1a1a; }
+        .login-box input { margin-bottom: 20px; text-align: center; font-size: 1.2rem; letter-spacing: 2px; }
+
+        /* MODAL PËR MODIFIKIM */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); z-index: 100;
+            display: none; align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px;
+            max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .flex-btns { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-cancel { background: #888; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; flex: 1; font-weight: 600;}
+        .btn-cancel:hover { background: #666; }
+
+        /* Ndarjet e fshehura fillimisht */
         #app-screen, #view-section, #add-section { display: none; }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; display: none; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; }
+
+        footer { text-align: center; padding: 20px; margin-top: 40px; color: #888; font-size: 0.9rem; }
+        footer a { color: #d4af37; text-decoration: none; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-box">
-            <h2 style="margin-bottom:20px;">Infinity Production</h2>
-            <input type="password" id="login-password" placeholder="Pass" style="width:100%; padding:15px; margin-bottom:20px; text-align:center; font-size:1.2rem;">
+            <h2>Infinity Production</h2>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Shëno fjalëkalimin për të hyrë</p>
+            <input type="password" id="login-password" placeholder="***" onkeypress="handleEnter(event)">
             <button class="btn-primary" onclick="kontrolloHyrjen()">Hyr</button>
+            <p id="login-error" style="color: red; font-size: 0.85rem; margin-top: 10px; display: none;">Fjalëkalim i pasaktë!</p>
         </div>
     </div>
 
     <div id="app-screen">
         <header>
-            <div class="logo-text">Infinity</div>
+            <div class="logo-text">Infinity Production</div>
             <nav>
                 <ul>
-                    <li><a id="nav-view" onclick="ndryshoFaqen('view')" class="active">Lista</a></li>
-                    <li><a id="nav-add" onclick="ndryshoFaqen('add')">Shto</a></li>
+                    <li><a id="nav-view" onclick="ndryshoFaqen('view')" class="active">Shiko Terminet</a></li>
+                    <li><a id="nav-add" onclick="ndryshoFaqen('add')">Shto Termin <span style="font-size:0.7rem;">🔒</span></a></li>
                     <li><button class="btn-logout" onclick="dil()">Dil</button></li>
                 </ul>
             </nav>
@@ -61,82 +144,97 @@
 
         <div class="container">
             <div id="add-section" class="card">
-                <h2>Shto Termin</h2>
+                <h2>Shto Termin të Ri</h2>
                 <form id="termin-form">
                     <div class="form-group"><label>Çifti</label><input type="text" id="cifti" required></div>
-                    <div class="form-group"><label>Lloji</label>
+                    <div class="form-group">
+                        <label>Lloji i Eventit</label>
                         <select id="lloji" required>
+                            <option value="" disabled selected>Zgjidh llojin...</option>
                             <option value="Dasëm">Dasëm</option>
                             <option value="Fejesë">Fejesë</option>
                             <option value="Kanagjegj">Kanagjegj</option>
                             <option value="Banket">Banket</option>
+                            <option value="Marrja e Nuses">Marrja e Nuses</option>
+                            <option value="Photosession">Photosession</option>
                         </select>
                     </div>
-                    <div class="form-group"><label>Data</label><input type="datetime-local" id="data-ora" required></div>
+                    <div class="form-group"><label>Data dhe Ora</label><input type="datetime-local" id="data-ora" required></div>
                     <div class="form-group"><label>Lokacioni</label><input type="text" id="lokacioni" required></div>
                     <div class="form-group"><label>Pajisjet</label><input type="text" id="pajisjet" required></div>
-                    <div class="form-group"><label>Çmimi (€)</label><input type="number" id="cmimi" required></div>
+                    <div class="form-group"><label>Çmimi Total (€)</label><input type="number" id="cmimi" required></div>
                     <div class="form-group"><label>Stafi</label><input type="text" id="puntoret" required></div>
-                    <div class="form-group"><label>Shënime</label><textarea id="pershkrimi"></textarea></div>
-                    <button type="submit" class="btn-primary">Ruaj Online</button>
+                    <div class="form-group"><label>Shënime</label><textarea id="pershkrimi" rows="3"></textarea></div>
+                    <button type="submit" class="btn-primary">Ruaj në Databazë</button>
                 </form>
             </div>
 
-            <div id="view-section">
-                <div id="termin-list"></div>
+            <div id="view-section" class="card">
+                <h2>Lista e Termineve</h2>
+                <div id="termin-list" class="termin-list"></div>
             </div>
         </div>
+
+        <footer>
+            <p>Krijuar nga Jeton Elezi | <a href="https://infinity-production.com">www.infinity-production.com</a></p>
+        </footer>
     </div>
 
     <div id="edit-modal" class="modal-overlay">
         <div class="modal-content">
-            <h3>Modifiko</h3>
+            <h3>Modifiko Terminin</h3>
             <form id="edit-form">
                 <input type="hidden" id="edit-id">
                 <div class="form-group"><label>Çifti</label><input type="text" id="edit-cifti"></div>
-                <div class="form-group"><label>Lloji</label>
+                <div class="form-group">
+                    <label>Lloji</label>
                     <select id="edit-lloji">
                         <option value="Dasëm">Dasëm</option>
                         <option value="Fejesë">Fejesë</option>
                         <option value="Kanagjegj">Kanagjegj</option>
                         <option value="Banket">Banket</option>
+                        <option value="Marrja e Nuses">Marrja e Nuses</option>
+                        <option value="Photosession">Photosession</option>
                     </select>
                 </div>
-                <div class="form-group"><label>Data</label><input type="datetime-local" id="edit-data-ora"></div>
+                <div class="form-group"><label>Data dhe Ora</label><input type="datetime-local" id="edit-data-ora"></div>
                 <div class="form-group"><label>Lokacioni</label><input type="text" id="edit-lokacioni"></div>
                 <div class="form-group"><label>Pajisjet</label><input type="text" id="edit-pajisjet"></div>
                 <div class="form-group"><label>Çmimi</label><input type="number" id="edit-cmimi"></div>
                 <div class="form-group"><label>Stafi</label><input type="text" id="edit-puntoret"></div>
                 <div class="form-group"><label>Shënime</label><textarea id="edit-pershkrimi"></textarea></div>
-                <div style="display:flex; gap:10px;">
+                <div class="flex-btns">
                     <button type="submit" class="btn-primary">Ruaj</button>
-                    <button type="button" onclick="mbyllModalin()" style="flex:1; background:#888; color:white; border:none; border-radius:6px;">Anulo</button>
+                    <button type="button" onclick="mbyllModalin()" class="btn-cancel">Anulo</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        // KONFIGURIMI YT
+        // CONFIGURIMI YT (MOS NDRYSHO KETE)
         const firebaseConfig = {
-          apiKey: "AIzaSyCUnAwolrTEWDc-RkSF2uGPLXH2aaZKGAw",
-          authDomain: "dasmat-7120d.firebaseapp.com",
-          projectId: "dasmat-7120d",
-          storageBucket: "dasmat-7120d.firebasestorage.app",
-          messagingSenderId: "903337518995",
-          appId: "1:903337518995:web:c747d698e4056ab8cdea66"
+          apiKey: "AIzaSyAhp586Fk4aUG--M01hoWgisTMhMnXFfco",
+          authDomain: "infinity-production-a7a76.firebaseapp.com",
+          projectId: "infinity-production-a7a76",
+          storageBucket: "infinity-production-a7a76.firebasestorage.app",
+          messagingSenderId: "780307654314",
+          appId: "1:780307654314:web:8080b1d3371bc991a392d3"
         };
         
+        // Inicializimi
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         let terminetArray = [];
         let currentRole = null;
 
+        function handleEnter(e) { if (e.key === 'Enter') kontrolloHyrjen(); }
+
         function kontrolloHyrjen() {
             const pass = document.getElementById('login-password').value;
             if (pass === '123') { currentRole = 'viewer'; hapAplikacionin('view'); }
             else if (pass === 'jeton555!') { currentRole = 'admin'; hapAplikacionin('view'); }
-            else { alert("Gabim!"); }
+            else { document.getElementById('login-error').style.display = 'block'; }
         }
 
         function hapAplikacionin(faqja) {
@@ -149,7 +247,11 @@
         function dil() { location.reload(); }
 
         function ndryshoFaqen(faqja) {
-            if(faqja === 'add' && currentRole !== 'admin') { alert("Vetem Admin!"); return; }
+            if(faqja === 'add' && currentRole !== 'admin') { 
+                const p = prompt("Fjalekalimi i Adminit:");
+                if(p === 'jeton555!') currentRole = 'admin';
+                else return;
+            }
             document.getElementById('view-section').style.display = (faqja === 'view' ? 'block' : 'none');
             document.getElementById('add-section').style.display = (faqja === 'add' ? 'block' : 'none');
             document.getElementById('nav-view').className = (faqja === 'view' ? 'active' : '');
@@ -172,14 +274,16 @@
             terminetArray.forEach((t, i) => {
                 const div = document.createElement('div');
                 div.className = 'termin-item';
+                if(i === 0) div.style.borderLeft = "8px solid #e74c3c";
                 div.innerHTML = `
                     <div class="termin-info">
-                        <h3>${t.cifti}</h3>
+                        <h3>${t.cifti} ${i === 0 ? '<span style="font-size:0.7rem; background:#e74c3c; color:white; padding:2px 6px; border-radius:4px;">RADHËS</span>' : ''}</h3>
                         <p>🎉 ${t.lloji} | 📅 ${t.dataOra.replace('T', ' ')}</p>
                         <p>📍 ${t.lokacioni} | 🎥 ${t.pajisjet}</p>
                         <p>👥 ${t.puntoret}</p>
                         <p class="price" onclick="zbuloCmimin(this, '${t.cmimi}')">💶: <span class="cmimi-vlere">***</span></p>
                         <p class="countdown">${merrKojenEMbetur(t.dataOra)}</p>
+                        ${t.pershkrimi ? `<div class="notes">${t.pershkrimi}</div>` : ''}
                     </div>
                     ${currentRole === 'admin' ? `
                     <div class="admin-actions">
@@ -196,11 +300,15 @@
             if(diff < 0) return "✅ Përfunduar";
             const dite = Math.floor(diff / (1000*60*60*24));
             const ore = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-            return `⏳ Edhe ${dite} dite, ${ore} ore`;
+            return `⏳ Edhe ${dite} ditë, ${ore} orë`;
         }
 
         window.zbuloCmimin = function(el, pr) {
-            if(prompt("Fjalekalimi:") === "jeton123") el.innerHTML = pr + " €";
+            if(prompt("Fjalekalimi:") === "jeton123") {
+                const span = el.querySelector('.cmimi-vlere');
+                span.innerText = pr + " €";
+                span.style.color = "#27ae60";
+            }
         };
 
         document.getElementById('termin-form').addEventListener('submit', (e) => {
@@ -230,7 +338,7 @@
             document.getElementById('edit-pajisjet').value = t.pajisjet;
             document.getElementById('edit-cmimi').value = t.cmimi;
             document.getElementById('edit-puntoret').value = t.puntoret;
-            document.getElementById('edit-pershkrimi').value = t.pershkrimi;
+            document.getElementById('edit-pershkrimi').value = t.pershkrimi || '';
             document.getElementById('edit-modal').style.display = 'flex';
         };
 
