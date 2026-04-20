@@ -3,132 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menaxhimi i Termineve - Infinity Production</title>
+    <title>Sistemi i Termineve - Infinity Production</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background-color: #f4f7f6; color: #333; }
         
-        header { background-color: #1a1a1a; color: #d4af37; padding: 20px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        header h1 { font-size: 1.8rem; letter-spacing: 2px; text-transform: uppercase; }
+        /* Navigimi */
+        header { 
+            background-color: #1a1a1a; 
+            color: #d4af37; 
+            padding: 15px 30px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+        }
+        .logo-text { font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
         
-        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
+        nav ul { list-style: none; display: flex; gap: 20px; }
+        nav ul li a { 
+            color: #fff; 
+            text-decoration: none; 
+            font-size: 0.95rem; 
+            cursor: pointer; 
+            transition: color 0.3s;
+            padding: 5px 10px;
+        }
+        nav ul li a:hover, nav ul li a.active { color: #d4af37; border-bottom: 2px solid #d4af37; }
+        .btn-logout { background: #ff4757; color: white; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer; }
+        .btn-logout:hover { background: #ff6b81; }
+
+        /* Kontejneri Kryesor */
+        .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
         
-        @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
-        
-        .card { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        /* Karta & Format */
+        .card { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         .card h2 { margin-bottom: 20px; font-size: 1.4rem; color: #1a1a1a; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
         
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
-        .form-group input, .form-group select, .form-group textarea { 
-            width: 100%; 
-            padding: 10px; 
-            border: 1px solid #ccc; 
-            border-radius: 6px; 
-            font-family: inherit; 
+        .form-group input, .form-group textarea { 
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; 
         }
         .form-group input:focus, .form-group textarea:focus { 
-            outline: none; 
-            border-color: #d4af37; 
-            box-shadow: 0 0 5px rgba(212, 175, 55, 0.3); 
+            outline: none; border-color: #d4af37; box-shadow: 0 0 5px rgba(212, 175, 55, 0.3); 
         }
         
-        button { background-color: #d4af37; color: #fff; border: none; padding: 12px 20px; width: 100%; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        button:hover { background-color: #b8962e; }
+        button.btn-primary { 
+            background-color: #d4af37; color: #fff; border: none; padding: 12px 20px; 
+            width: 100%; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.3s; 
+        }
+        button.btn-primary:hover { background-color: #b8962e; }
         
+        /* Lista e Termineve */
         .termin-list { display: flex; flex-direction: column; gap: 15px; }
-        .termin-item { background: #fafafa; border-left: 5px solid #d4af37; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: flex-start; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .termin-item { background: #fafafa; border-left: 5px solid #d4af37; padding: 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: flex-start; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         .termin-info { flex: 1; }
         .termin-info h3 { margin-bottom: 8px; font-size: 1.2rem; color: #1a1a1a; }
-        .termin-info p { font-size: 0.9rem; color: #555; margin-bottom: 4px; }
+        .termin-info p { font-size: 0.95rem; color: #555; margin-bottom: 5px; }
         
-        /* Stili për çmimin e fshehur */
-        .termin-info .price { 
-            color: #555; 
-            font-weight: 600; 
-            cursor: pointer; 
-            display: inline-block;
-            padding: 2px 5px;
-            border-radius: 4px;
-            transition: background 0.2s;
-        }
-        .termin-info .price:hover { background: #e0e0e0; }
+        .price { color: #555; font-weight: 600; cursor: pointer; display: inline-block; padding: 2px 5px; border-radius: 4px; transition: background 0.2s; }
+        .price:hover { background: #e0e0e0; }
         .cmimi-vlere { color: #d4af37; letter-spacing: 2px; }
         
-        .termin-info .notes { background: #eee; padding: 8px; border-radius: 4px; margin-top: 8px; font-size: 0.85rem; font-style: italic; }
-        .termin-info .countdown { color: #d84315; font-weight: 600; margin-top: 10px; font-size: 0.95rem; }
+        .notes { background: #eee; padding: 10px; border-radius: 4px; margin-top: 10px; font-size: 0.9rem; font-style: italic; }
+        .countdown { color: #d84315; font-weight: 600; margin-top: 12px; font-size: 1rem; }
         
-        .btn-delete { background-color: #ff4757; color: white; border: none; width: auto; padding: 8px 15px; font-size: 0.85rem; border-radius: 4px; margin-left: 15px; cursor: pointer; transition: 0.3s; }
+        .btn-delete { background-color: #ff4757; color: white; border: none; padding: 8px 15px; font-size: 0.85rem; border-radius: 4px; margin-left: 15px; cursor: pointer; transition: 0.3s; }
         .btn-delete:hover { background-color: #ff6b81; }
 
-        footer { text-align: center; padding: 20px; margin-top: 40px; background: #1a1a1a; color: #888; font-size: 0.9rem; }
+        /* Login Screen */
+        #login-screen {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1920&q=80') center/cover;
+        }
+        .login-box {
+            background: white; padding: 40px; border-radius: 10px; width: 350px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-top: 5px solid #d4af37;
+        }
+        .login-box h2 { margin-bottom: 20px; font-family: 'Playfair Display', serif; color: #1a1a1a; }
+        .login-box input { margin-bottom: 20px; text-align: center; font-size: 1.2rem; letter-spacing: 2px; }
+
+        /* Ndarjet e fshehura fillimisht */
+        #app-screen, #view-section, #add-section { display: none; }
+
+        footer { text-align: center; padding: 20px; margin-top: 40px; color: #888; font-size: 0.9rem; }
         footer a { color: #d4af37; text-decoration: none; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Infinity Production</h1>
-        <p style="font-size: 0.9rem; color: #fff;">Sistemi i Menaxhimit të Termineve</p>
-    </header>
-
-    <div class="container">
-        <div class="card">
-            <h2>Shto Termin të Ri</h2>
-            <form id="termin-form">
-                <div class="form-group">
-                    <label>Çifti (ose Emri i Klientit)</label>
-                    <input type="text" id="cifti" placeholder="psh. Ejup & Semavije" required>
-                </div>
-                <div class="form-group">
-                    <label>Data dhe Ora e fillimit</label>
-                    <input type="datetime-local" id="data-ora" required>
-                </div>
-                <div class="form-group">
-                    <label>Lokacioni</label>
-                    <input type="text" id="lokacioni" placeholder="psh. Restorant NOBEL, Tetovë" required>
-                </div>
-                <div class="form-group">
-                    <label>Paketa / Shërbimet</label>
-                    <input type="text" id="pajisjet" placeholder="psh. Vinç, Dron, Foto Session" required>
-                </div>
-                <div class="form-group">
-                    <label>Çmimi Total (€)</label>
-                    <input type="number" id="cmimi" placeholder="psh. 1500" required>
-                </div>
-                <div class="form-group">
-                    <label>Punëtorët Angazhuar</label>
-                    <input type="text" id="puntoret" placeholder="psh. Jeton, Agron, Kameramani 3" required>
-                </div>
-                <div class="form-group">
-                    <label>Përshkrimi / Shënime Shtesë</label>
-                    <textarea id="pershkrimi" rows="3" placeholder="psh. Duhet të jemi aty 1 orë më herët. Klienti kërkon xhirim specifik..."></textarea>
-                </div>
-                
-                <button type="submit">Ruaj Terminin</button>
-            </form>
-        </div>
-
-        <div class="card">
-            <h2>Terminet e Ardhshme</h2>
-            <div id="termin-list" class="termin-list">
-                </div>
+    <div id="login-screen">
+        <div class="login-box">
+            <h2>Infinity Production</h2>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Shëno fjalëkalimin për të hyrë</p>
+            <input type="password" id="login-password" placeholder="***" onkeypress="handleEnter(event)">
+            <button class="btn-primary" onclick="kontrolloHyrjen()">Hyr</button>
+            <p id="login-error" style="color: red; font-size: 0.85rem; margin-top: 10px; display: none;">Fjalëkalim i pasaktë!</p>
         </div>
     </div>
 
-    <footer>
-        <p>Krijuar nga Jeton Elezi | <a href="https://infinity-production.com">www.infinity-production.com</a></p>
-    </footer>
+    <div id="app-screen">
+        <header>
+            <div class="logo-text">Infinity Production</div>
+            <nav>
+                <ul>
+                    <li><a id="nav-view" onclick="ndryshoFaqen('view')" class="active">Shiko Terminet</a></li>
+                    <li><a id="nav-add" onclick="ndryshoFaqen('add')">Shto Termin <span style="font-size:0.7rem;">🔒</span></a></li>
+                    <li><button class="btn-logout" onclick="dil()">Dil</button></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="container">
+            
+            <div id="add-section" class="card">
+                <h2>Shto Termin të Ri</h2>
+                <form id="termin-form">
+                    <div class="form-group">
+                        <label>Çifti (ose Emri i Klientit)</label>
+                        <input type="text" id="cifti" placeholder="psh. Ejup & Semavije" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Data dhe Ora</label>
+                        <input type="datetime-local" id="data-ora" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Lokacioni</label>
+                        <input type="text" id="lokacioni" placeholder="psh. Restorant NOBEL, Tetovë" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Pajisjet</label>
+                        <input type="text" id="pajisjet" placeholder="psh. Vinç, Dron, Foto Session" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Çmimi Total (€)</label>
+                        <input type="number" id="cmimi" placeholder="psh. 1500" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Stafi (Punëtorët)</label>
+                        <input type="text" id="puntoret" placeholder="psh. Jeton, Agron" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Shënime Shtesë</label>
+                        <textarea id="pershkrimi" rows="3" placeholder="Detaje të tjera..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">Ruaj Terminin</button>
+                </form>
+            </div>
+
+            <div id="view-section" class="card">
+                <h2>Lista e Termineve</h2>
+                <div id="termin-list" class="termin-list">
+                    </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>Krijuar nga Jeton Elezi | <a href="https://infinity-production.com">www.infinity-production.com</a></p>
+        </footer>
+    </div>
 
     <script>
-        // Inicializimi i të dhënave nga Local Storage
+        // --- 1. MENAXHIMI I HYRJES (LOGIN) ---
+        let currentRole = null; // 'viewer' ose 'admin'
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') kontrolloHyrjen();
+        }
+
+        function kontrolloHyrjen() {
+            const pass = document.getElementById('login-password').value;
+            const errorMsg = document.getElementById('login-error');
+            
+            if (pass === '123') {
+                currentRole = 'viewer';
+                hapAplikacionin('view');
+            } else if (pass === 'jeton555!') {
+                currentRole = 'admin';
+                hapAplikacionin('add');
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        function hapAplikacionin(faqjaFillestare) {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app-screen').style.display = 'block';
+            
+            // Nëse futet si admin, fshij ikonën e drynit te menyja Shto Termin
+            if(currentRole === 'admin') {
+                document.getElementById('nav-add').innerHTML = "Shto Termin";
+            }
+
+            ndryshoFaqen(faqjaFillestare);
+            shfaqTerminet();
+        }
+
+        function dil() {
+            currentRole = null;
+            document.getElementById('login-password').value = '';
+            document.getElementById('login-error').style.display = 'none';
+            document.getElementById('app-screen').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+        }
+
+        // --- 2. MENAXHIMI I FAQEVE (ROUTING) ---
+        function ndryshoFaqen(faqja) {
+            // Kontrollo sigurinë nëse dikush do të shkojë te faqja 'add'
+            if (faqja === 'add' && currentRole !== 'admin') {
+                const pass = prompt("Kjo faqe është vetëm për menaxhim.\nShëno fjalëkalimin e adminit:");
+                if (pass === 'jeton555!') {
+                    currentRole = 'admin';
+                    document.getElementById('nav-add').innerHTML = "Shto Termin"; // Hiq drynin
+                } else {
+                    alert("Fjalëkalim i pasaktë!");
+                    return; // Ndalo kalimin
+                }
+            }
+
+            // Fshij klasen 'active' nga te dy butonat
+            document.getElementById('nav-view').classList.remove('active');
+            document.getElementById('nav-add').classList.remove('active');
+
+            // Fshih te dyja seksionet
+            document.getElementById('view-section').style.display = 'none';
+            document.getElementById('add-section').style.display = 'none';
+
+            // Shfaq atë që u kërkua
+            if (faqja === 'view') {
+                document.getElementById('view-section').style.display = 'block';
+                document.getElementById('nav-view').classList.add('active');
+                shfaqTerminet();
+            } else if (faqja === 'add') {
+                document.getElementById('add-section').style.display = 'block';
+                document.getElementById('nav-add').classList.add('active');
+            }
+        }
+
+        // --- 3. LOGJIKA E TERMINEVE (Storage, Shto, Fshij) ---
         let terminet = JSON.parse(localStorage.getItem('terminetDasma')) || [];
 
-        const form = document.getElementById('termin-form');
-        const listContainer = document.getElementById('termin-list');
-
-        // Funksioni për të llogaritur kohën e mbetur
         function merrKojenEMbetur(dataTerminit) {
             const tani = new Date().getTime();
             const dataTarget = new Date(dataTerminit).getTime();
@@ -141,28 +261,23 @@
             return `Kanë mbetur edhe: ${dite} ditë dhe ${ore} orë`;
         }
 
-        // Funksioni për të zbuluar çmimin me fjalëkalim
+        // Fshehja/Zbulimi i çmimit (Mbetet njësoj me jeton123)
         window.zbuloCmimin = function(element, cmimiVertet) {
             const span = element.querySelector('.cmimi-vlere');
-            
-            if (span.innerText !== "***") return; // Nëse është hapur, mos kërko prapë
-
-            const fjalekalimi = prompt("Ju lutem shënoni fjalëkalimin për të parë çmimin:");
-            const fjalekalimiSakte = "jeton123";
-
-            if (fjalekalimi === fjalekalimiSakte) {
+            if (span.innerText !== "***") return; 
+            const fjalekalimi = prompt("Shënoni fjalëkalimin për të parë çmimin:");
+            if (fjalekalimi === "jeton123") {
                 span.innerText = cmimiVertet + " €";
                 span.style.color = "#27ae60"; 
             } else if (fjalekalimi !== null) {
-                alert("Fjalëkalimi është i pasaktë!");
+                alert("Fjalëkalim i pasaktë!");
             }
         };
 
-        // Funksioni kryesor për shfaqjen dhe renditjen e termineve
         function shfaqTerminet() {
+            const listContainer = document.getElementById('termin-list');
             listContainer.innerHTML = '';
             
-            // Renditja: nga data dhe ora më e afërt tek ajo më e largët
             terminet.sort((a, b) => new Date(a.dataOra) - new Date(b.dataOra));
 
             if (terminet.length === 0) {
@@ -177,14 +292,13 @@
 
                 const countdown = merrKojenEMbetur(termin.dataOra);
                 const shenimeHtml = termin.pershkrimi ? `<div class="notes">📝 <strong>Shënime:</strong> ${termin.pershkrimi}</div>` : '';
-                
-                // Etiketa për terminin e radhës
                 const isNext = index === 0 ? '<span style="background: #d4af37; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px; vertical-align: middle;">🔥 Termini i Radhës</span>' : '';
+
+                // Butoni i fshirjes shfaqet vetëm nëse është admin
+                const deleteBtn = currentRole === 'admin' ? `<button class="btn-delete" onclick="fshijTermin(${index})">Fshij</button>` : '';
 
                 const div = document.createElement('div');
                 div.className = 'termin-item';
-                
-                // Theksimi i terminit të parë me vizë të trashë
                 if(index === 0) div.style.borderLeft = "8px solid #d4af37";
 
                 div.innerHTML = `
@@ -198,16 +312,14 @@
                         ${shenimeHtml}
                         <p class="countdown">⏳ ${countdown}</p>
                     </div>
-                    <button class="btn-delete" onclick="fshijTermin(${index})">Fshij</button>
+                    ${deleteBtn}
                 `;
                 listContainer.appendChild(div);
             });
         }
 
-        // Eventi kur shtypim butonin "Ruaj Terminin"
-        form.addEventListener('submit', function(e) {
+        document.getElementById('termin-form').addEventListener('submit', function(e) {
             e.preventDefault();
-
             const cifti = document.getElementById('cifti').value;
             const dataOra = document.getElementById('data-ora').value;
             const lokacioni = document.getElementById('lokacioni').value;
@@ -216,16 +328,14 @@
             const puntoret = document.getElementById('puntoret').value;
             const pershkrimi = document.getElementById('pershkrimi').value;
 
-            const terminIRi = { cifti, dataOra, lokacioni, pajisjet, cmimi, puntoret, pershkrimi };
-            
-            terminet.push(terminIRi);
+            terminet.push({ cifti, dataOra, lokacioni, pajisjet, cmimi, puntoret, pershkrimi });
             localStorage.setItem('terminetDasma', JSON.stringify(terminet));
             
-            form.reset();
-            shfaqTerminet();
+            this.reset();
+            alert("Termini u ruajt me sukses!");
+            ndryshoFaqen('view'); // Kaloje automatikisht te lista pasi ta shtoje
         });
 
-        // Funksioni për fshirjen e një termini
         window.fshijTermin = function(index) {
             if(confirm("A je i sigurt që dëshiron ta fshish këtë termin?")) {
                 terminet.splice(index, 1);
@@ -234,11 +344,12 @@
             }
         };
 
-        // Ekzekutimi fillestar
-        shfaqTerminet();
-        
-        // Rifreskimi i kohës çdo 1 minutë
-        setInterval(shfaqTerminet, 60000);
+        // Rifresko kohen cdo minut
+        setInterval(() => {
+            if (document.getElementById('view-section').style.display === 'block') {
+                shfaqTerminet();
+            }
+        }, 60000);
     </script>
 </body>
 </html>
