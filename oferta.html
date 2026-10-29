@@ -89,7 +89,8 @@
     .status { min-height: 1.5em; margin: 14px 0 0; color: var(--muted); }
     .preview-section { margin-top: 38px; }
     .preview-wrap { overflow-x: auto; padding: 16px; border: 1px solid var(--border); border-radius: 14px; background: #e9e9eb; text-align: center; }
-    #offer-image { display: block; width: min(100%, 760px); height: auto; margin: 0 auto; }
+    #offer-pages { display: grid; gap: 18px; justify-items: center; }
+    .offer-page-image { display: block; width: min(100%, 760px); height: auto; }
     .preview-placeholder { padding: 50px 12px; color: var(--muted); }
     [hidden] { display: none !important; }
     @media (max-width: 700px) {
@@ -101,11 +102,14 @@
     @media print {
       :root { color-scheme: light; }
       @page { size: A4 portrait; margin: 0; }
-      html, body { width: 210mm; height: 297mm; min-height: 0; margin: 0; padding: 0; background: #fff; }
+      html, body { width: 210mm; height: auto; min-height: 0; margin: 0; padding: 0; background: #fff; }
       .topbar, main > h1, main > .intro, #offer-form, .preview-section > h2, .preview-section > p { display: none !important; }
       main { display: block; }
-      .page, main, .preview-section, .preview-wrap { width: 210mm; height: 297mm; margin: 0; padding: 0; border: 0; background: #fff; }
-      #offer-image { width: 210mm; height: 297mm; max-width: none; margin: 0; object-fit: fill; }
+      .page, main, .preview-section, .preview-wrap { width: 210mm; margin: 0; padding: 0; border: 0; background: #fff; }
+      .preview-wrap { height: auto; overflow: visible; }
+      #offer-pages { display: block !important; }
+      .offer-page-image { display: block; width: 210mm; height: 297mm; max-width: none; margin: 0; object-fit: fill; break-after: page; page-break-after: always; }
+      .offer-page-image:last-child { break-after: auto; page-break-after: auto; }
     }
   </style>
 </head>
@@ -324,7 +328,7 @@
         <p class="hint">Kontrolloni ofertën para se ta shkarkoni ose printoni.</p>
         <div class="preview-wrap">
           <p id="preview-placeholder" class="preview-placeholder">Plotësoni formularin dhe shtypni “Përgatit ofertën”.</p>
-          <img id="offer-image" alt="Oferta e përgatitur për klientin" hidden>
+          <div id="offer-pages" hidden></div>
         </div>
       </section>
     </main>
@@ -332,12 +336,11 @@
 
   <script>
     const form = document.getElementById('offer-form');
-    const offerImage = document.getElementById('offer-image');
+    const offerPages = document.getElementById('offer-pages');
     const status = document.getElementById('status');
     const downloadButton = document.getElementById('download-image');
     const printButton = document.getElementById('print-offer');
     let offerBlob = null;
-    let imageUrl = null;
 
     function updateEventCard(card) {
       const toggle = card.querySelector('[data-event-toggle]');
@@ -592,12 +595,9 @@
       const height = 1980;
       const margin = 92;
       const contentWidth = width - margin * 2;
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
+      const contextCanvas = document.createElement('canvas');
+      const context = contextCanvas.getContext('2d');
       if (!context) throw new Error('Nuk u krijua dot fotografia e ofertës.');
-      canvas.width = width;
-      canvas.height = height;
-
       const sections = data.events.map((event) => {
         const date = event.date
           ? formatDate(event.date)
@@ -633,165 +633,204 @@
       const priceHeight = 172;
       const footerGap = 22;
       const contentStart = 305;
-      const contentBottom = height - signatureAndPaymentsHeight - priceHeight - footerGap - 24;
-      let fontSize = 29;
-      let sectionLayouts;
-      let requiredContentHeight = 0;
-      while (fontSize >= 19) {
-        const bodyLineHeight = fontSize + 14;
-        const headingHeight = fontSize + 30;
-        context.font = `${fontSize}px Arial, sans-serif`;
-        sectionLayouts = sections.map((section) => {
-          const wrappedLines = section.lines.flatMap((line) => wrapText(context, line, contentWidth - 54));
-          return {
-            ...section,
-            wrappedLines,
-            height: headingHeight + wrappedLines.length * bodyLineHeight + 20
-          };
-        });
-        const sectionGap = 13;
-        requiredContentHeight = sectionLayouts.reduce((sum, section) => sum + section.height, 0) +
-          Math.max(0, sectionLayouts.length - 1) * sectionGap;
-        if (contentStart + requiredContentHeight <= contentBottom) break;
-        fontSize -= 1;
-      }
-      if (fontSize < 19) {
-        throw new Error('Përmbajtja është shumë e gjatë për një faqe A4. Shkurtoni shënimet ose përshkrimet e pajisjeve.');
-      }
-
-      const background = context.createLinearGradient(0, 0, width, height);
-      background.addColorStop(0, '#ffffff');
-      background.addColorStop(1, '#f8f7f5');
-      context.fillStyle = background;
-      context.fillRect(0, 0, width, height);
-
-      context.fillStyle = '#a85f4b';
-      context.font = 'bold 58px Georgia, serif';
-      context.fillText('OFERTA', margin, 84);
-      context.fillStyle = '#22222a';
-      context.font = 'bold 27px Arial, sans-serif';
-      context.fillText('Infinity Production', margin, 132);
-      context.font = '22px Arial, sans-serif';
-      context.fillText('072-722-060', margin, 168);
-      context.fillText('www.infinity-production.com', margin, 202);
-      context.fillText('Tetovë', margin, 236);
-
-      const logoMaxWidth = 200;
-      const logoMaxHeight = 160;
-      const scale = Math.min(logoMaxWidth / logo.naturalWidth, logoMaxHeight / logo.naturalHeight);
-      const logoWidth = logo.naturalWidth * scale;
-      const logoHeight = logo.naturalHeight * scale;
-      context.drawImage(logo, width - margin - logoWidth, 30, logoWidth, logoHeight);
-
-      const rightX = width - margin - 420;
-      const rightWidth = 420;
-      context.fillStyle = '#a85f4b';
-      context.font = 'bold 21px Arial, sans-serif';
-      context.textAlign = 'right';
-      context.fillText('DATA E OFERTËS', width - margin, 194);
-      context.fillStyle = '#22222a';
-      context.font = '22px Arial, sans-serif';
-      context.fillText(formatDate(new Date()), width - margin, 224);
-      context.fillStyle = '#a85f4b';
-      context.font = 'bold 21px Arial, sans-serif';
-      context.fillText(data.customerTitle, width - margin, 256);
-      context.fillStyle = '#22222a';
-      context.font = '20px Arial, sans-serif';
-      const customerName = data.customerName || '____________________________';
-      wrapText(context, customerName, rightWidth).slice(0, 2).forEach((line, index) => {
-        context.fillText(line, width - margin, 282 + index * 25);
-      });
-      context.textAlign = 'left';
-      context.fillStyle = '#c7836f';
-      context.fillRect(margin, contentStart - 8, contentWidth, 3);
-
+      const fontSize = 29;
+      const bodyLineHeight = fontSize + 14;
+      const headingHeight = fontSize + 30;
       const sectionGap = 13;
-      const availableForSections = contentBottom - contentStart;
-      const distributedGap = sectionLayouts.length > 1
-        ? Math.max(0, (availableForSections - requiredContentHeight) / (sectionLayouts.length - 1))
-        : 0;
-      let y = contentStart;
-      sectionLayouts.forEach((section) => {
-        context.fillStyle = '#f4f1ef';
-        context.beginPath();
-        context.roundRect(margin, y, contentWidth, section.height, 14);
-        context.fill();
-        context.strokeStyle = '#e4dad6';
-        context.lineWidth = 1;
-        context.stroke();
-        context.fillStyle = '#a85f4b';
-        context.font = `bold ${fontSize + 2}px Arial, sans-serif`;
-        context.fillText(section.title, margin + 22, y + fontSize + 9);
-        context.fillStyle = '#22222a';
-        context.font = `${fontSize}px Arial, sans-serif`;
-        const bodyLineHeight = fontSize + 14;
-        section.wrappedLines.forEach((line, index) => {
-          context.fillText(line, margin + 24, y + fontSize + 34 + index * bodyLineHeight);
+      const contentBottom = height - signatureAndPaymentsHeight - priceHeight - footerGap - 52;
+      const availableContentHeight = contentBottom - contentStart;
+      const maxBodyLines = Math.floor((availableContentHeight - headingHeight - 20) / bodyLineHeight);
+      context.font = `${fontSize}px Arial, sans-serif`;
+
+      const pages = [[]];
+      let usedHeight = 0;
+      sections.forEach((section) => {
+        const wrappedLines = section.lines.flatMap((line) => wrapText(context, line, contentWidth - 54));
+        let lineIndex = 0;
+        let partIndex = 0;
+        do {
+          let availableLines = Math.floor(
+            (availableContentHeight - usedHeight - (pages[pages.length - 1].length ? sectionGap : 0) - headingHeight - 20) /
+            bodyLineHeight
+          );
+          if (availableLines <= 0 && pages[pages.length - 1].length) {
+            pages.push([]);
+            usedHeight = 0;
+            availableLines = maxBodyLines;
+          }
+          const lineCount = Math.min(availableLines, wrappedLines.length - lineIndex);
+          const isContinuation = partIndex > 0;
+          const title = isContinuation ? `${section.title} (VAZHDIM)` : section.title;
+          const lines = wrappedLines.slice(lineIndex, lineIndex + lineCount);
+          const layout = {
+            title,
+            wrappedLines: lines,
+            height: headingHeight + lines.length * bodyLineHeight + 20
+          };
+          if (pages[pages.length - 1].length) usedHeight += sectionGap;
+          pages[pages.length - 1].push(layout);
+          usedHeight += layout.height;
+          lineIndex += lineCount;
+          partIndex += 1;
+          if (lineIndex < wrappedLines.length) {
+            pages.push([]);
+            usedHeight = 0;
+          }
+        } while (lineIndex < wrappedLines.length);
+      });
+
+      return pages.map((pageSections, pageIndex) => {
+        const canvas = document.createElement('canvas');
+        const pageContext = canvas.getContext('2d');
+        if (!pageContext) throw new Error('Nuk u krijua dot fotografia e ofertës.');
+        canvas.width = width;
+        canvas.height = height;
+
+        const background = pageContext.createLinearGradient(0, 0, width, height);
+        background.addColorStop(0, '#ffffff');
+        background.addColorStop(1, '#f8f7f5');
+        pageContext.fillStyle = background;
+        pageContext.fillRect(0, 0, width, height);
+
+        pageContext.fillStyle = '#a85f4b';
+        pageContext.font = 'bold 58px Georgia, serif';
+        pageContext.fillText('OFERTA', margin, 84);
+        pageContext.fillStyle = '#22222a';
+        pageContext.font = 'bold 27px Arial, sans-serif';
+        pageContext.fillText('Infinity Production', margin, 132);
+        pageContext.font = '22px Arial, sans-serif';
+        pageContext.fillText('072-722-060', margin, 168);
+        pageContext.fillText('www.infinity-production.com', margin, 202);
+        pageContext.fillText('Tetovë', margin, 236);
+
+        const logoMaxWidth = 200;
+        const logoMaxHeight = 160;
+        const scale = Math.min(logoMaxWidth / logo.naturalWidth, logoMaxHeight / logo.naturalHeight);
+        const logoWidth = logo.naturalWidth * scale;
+        const logoHeight = logo.naturalHeight * scale;
+        pageContext.drawImage(logo, width - margin - logoWidth, 30, logoWidth, logoHeight);
+
+        const rightWidth = 420;
+        pageContext.fillStyle = '#a85f4b';
+        pageContext.font = 'bold 21px Arial, sans-serif';
+        pageContext.textAlign = 'right';
+        pageContext.fillText('DATA E OFERTËS', width - margin, 194);
+        pageContext.fillStyle = '#22222a';
+        pageContext.font = '22px Arial, sans-serif';
+        pageContext.fillText(formatDate(new Date()), width - margin, 224);
+        pageContext.fillStyle = '#a85f4b';
+        pageContext.font = 'bold 21px Arial, sans-serif';
+        pageContext.fillText(data.customerTitle, width - margin, 256);
+        pageContext.fillStyle = '#22222a';
+        pageContext.font = '20px Arial, sans-serif';
+        const customerName = data.customerName || '____________________________';
+        wrapText(pageContext, customerName, rightWidth).slice(0, 2).forEach((line, index) => {
+          pageContext.fillText(line, width - margin, 282 + index * 25);
         });
-        y += section.height + sectionGap + distributedGap;
+        pageContext.textAlign = 'left';
+        pageContext.fillStyle = '#c7836f';
+        pageContext.fillRect(margin, contentStart - 8, contentWidth, 3);
+
+        let y = contentStart;
+        pageSections.forEach((section) => {
+          pageContext.fillStyle = '#f4f1ef';
+          pageContext.beginPath();
+          pageContext.roundRect(margin, y, contentWidth, section.height, 14);
+          pageContext.fill();
+          pageContext.strokeStyle = '#e4dad6';
+          pageContext.lineWidth = 1;
+          pageContext.stroke();
+          pageContext.fillStyle = '#a85f4b';
+          pageContext.font = `bold ${fontSize + 2}px Arial, sans-serif`;
+          pageContext.fillText(section.title, margin + 22, y + fontSize + 9);
+          pageContext.fillStyle = '#22222a';
+          pageContext.font = `${fontSize}px Arial, sans-serif`;
+          section.wrappedLines.forEach((line, index) => {
+            pageContext.fillText(line, margin + 24, y + fontSize + 34 + index * bodyLineHeight);
+          });
+          y += section.height + sectionGap;
+        });
+
+        if (pageIndex === pages.length - 1) {
+          const priceY = height - signatureAndPaymentsHeight - priceHeight - 42;
+          pageContext.fillStyle = '#f4f1ef';
+          pageContext.beginPath();
+          pageContext.roundRect(margin, priceY, contentWidth, priceHeight, 14);
+          pageContext.fill();
+          pageContext.strokeStyle = '#e4dad6';
+          pageContext.stroke();
+          pageContext.fillStyle = '#a85f4b';
+          pageContext.font = 'bold 27px Arial, sans-serif';
+          pageContext.fillText('ÇMIMI I PËRGJITHSHËM', margin + 24, priceY + 40);
+          pageContext.fillStyle = '#22222a';
+          pageContext.font = '24px Arial, sans-serif';
+          pageContext.fillText('Çmimi i përgjithshëm: ____________________ €', margin + 24, priceY + 78);
+          pageContext.fillText('Lirimi: ____________________ €', margin + 24, priceY + 114);
+          pageContext.fillText('Çmimi pas lirimit: ____________________ €', margin + 24, priceY + 150);
+
+          const columnsY = priceY + priceHeight + footerGap;
+          const gap = 28;
+          const columnWidth = (contentWidth - gap) / 2;
+          const paymentX = margin + columnWidth + gap;
+          const columnHeight = 140;
+          pageContext.fillStyle = '#f4f1ef';
+          pageContext.beginPath();
+          pageContext.roundRect(margin, columnsY, columnWidth, columnHeight, 14);
+          pageContext.roundRect(paymentX, columnsY, columnWidth, columnHeight, 14);
+          pageContext.fill();
+          pageContext.strokeStyle = '#e4dad6';
+          pageContext.stroke();
+
+          pageContext.fillStyle = '#a85f4b';
+          pageContext.font = 'bold 24px Arial, sans-serif';
+          pageContext.fillText('NËNSHKRIMET', margin + 22, columnsY + 34);
+          pageContext.fillStyle = '#22222a';
+          pageContext.font = '20px Arial, sans-serif';
+          pageContext.fillText('Nënshkrimi nga: Jeton Elezi', margin + 22, columnsY + 66);
+          pageContext.fillText('Nënshkrimi i klientit', margin + 22, columnsY + 112);
+          pageContext.strokeStyle = '#8b8b92';
+          pageContext.beginPath();
+          pageContext.moveTo(margin + 22, columnsY + 82);
+          pageContext.lineTo(margin + columnWidth - 22, columnsY + 82);
+          pageContext.moveTo(margin + 22, columnsY + 128);
+          pageContext.lineTo(margin + columnWidth - 22, columnsY + 128);
+          pageContext.stroke();
+
+          pageContext.fillStyle = '#a85f4b';
+          pageContext.font = 'bold 24px Arial, sans-serif';
+          pageContext.fillText('PAGESAT', paymentX + 22, columnsY + 34);
+          pageContext.fillStyle = '#22222a';
+          pageContext.font = '20px Arial, sans-serif';
+          pageContext.fillText('Para-pagesa: ____________________ €', paymentX + 22, columnsY + 76);
+          pageContext.fillText('Pagesa e mbetur: ________________ €', paymentX + 22, columnsY + 120);
+
+          pageContext.fillStyle = '#55545b';
+          pageContext.font = '21px Arial, sans-serif';
+          pageContext.textAlign = 'center';
+          const gratitudeLines = wrapText(pageContext, 'Faleminderit që na besuat për ditën tuaj të veçantë. Ju urojmë momente të mbushura me gëzim, dashuri dhe kujtime të paharrueshme.', contentWidth - 30);
+          gratitudeLines.forEach((line, index) => {
+            pageContext.fillText(line, width / 2, height - 50 - (gratitudeLines.length - 1 - index) * 28);
+          });
+        } else {
+          pageContext.fillStyle = '#55545b';
+          pageContext.font = '18px Arial, sans-serif';
+          pageContext.textAlign = 'center';
+          pageContext.fillText('Vazhdon në faqen tjetër', width / 2, height - 46);
+        }
+        return canvas;
       });
+    }
 
-      const footerY = height - signatureAndPaymentsHeight - priceHeight - 42;
-      const priceY = footerY;
-      context.fillStyle = '#f4f1ef';
-      context.beginPath();
-      context.roundRect(margin, priceY, contentWidth, priceHeight, 14);
-      context.fill();
-      context.strokeStyle = '#e4dad6';
-      context.stroke();
-      context.fillStyle = '#a85f4b';
-      context.font = 'bold 27px Arial, sans-serif';
-      context.fillText('ÇMIMI I PËRGJITHSHËM', margin + 24, priceY + 40);
-      context.fillStyle = '#22222a';
-      context.font = '24px Arial, sans-serif';
-      context.fillText('Çmimi i përgjithshëm: ____________________ €', margin + 24, priceY + 78);
-      context.fillText('Lirimi: ____________________ €', margin + 24, priceY + 114);
-      context.fillText('Çmimi pas lirimit: ____________________ €', margin + 24, priceY + 150);
-
-      const columnsY = priceY + priceHeight + footerGap;
-      const gap = 28;
-      const columnWidth = (contentWidth - gap) / 2;
-      const paymentX = margin + columnWidth + gap;
-      const columnHeight = 140;
-      context.fillStyle = '#f4f1ef';
-      context.beginPath();
-      context.roundRect(margin, columnsY, columnWidth, columnHeight, 14);
-      context.roundRect(paymentX, columnsY, columnWidth, columnHeight, 14);
-      context.fill();
-      context.strokeStyle = '#e4dad6';
-      context.stroke();
-
-      context.fillStyle = '#a85f4b';
-      context.font = 'bold 24px Arial, sans-serif';
-      context.fillText('NËNSHKRIMET', margin + 22, columnsY + 34);
-      context.fillStyle = '#22222a';
-      context.font = '20px Arial, sans-serif';
-      context.fillText('Nënshkrimi nga: Jeton Elezi', margin + 22, columnsY + 66);
-      context.fillText('Nënshkrimi i klientit', margin + 22, columnsY + 112);
-      context.strokeStyle = '#8b8b92';
-      context.beginPath();
-      context.moveTo(margin + 22, columnsY + 82);
-      context.lineTo(margin + columnWidth - 22, columnsY + 82);
-      context.moveTo(margin + 22, columnsY + 128);
-      context.lineTo(margin + columnWidth - 22, columnsY + 128);
-      context.stroke();
-
-      context.fillStyle = '#a85f4b';
-      context.font = 'bold 24px Arial, sans-serif';
-      context.fillText('PAGESAT', paymentX + 22, columnsY + 34);
-      context.fillStyle = '#22222a';
-      context.font = '20px Arial, sans-serif';
-      context.fillText('Para-pagesa: ____________________ €', paymentX + 22, columnsY + 76);
-      context.fillText('Pagesa e mbetur: ________________ €', paymentX + 22, columnsY + 120);
-
-      context.fillStyle = '#55545b';
-      context.font = '21px Arial, sans-serif';
-      context.textAlign = 'center';
-      const gratitudeLines = wrapText(context, 'Faleminderit që na besuat për ditën tuaj të veçantë. Ju urojmë momente të mbushura me gëzim, dashuri dhe kujtime të paharrueshme.', contentWidth - 30);
-      gratitudeLines.forEach((line, index) => {
-        context.fillText(line, width / 2, height - 50 - (gratitudeLines.length - 1 - index) * 28);
+    function combineOfferPages(pages) {
+      const combined = document.createElement('canvas');
+      combined.width = pages[0].width;
+      combined.height = pages.length * pages[0].height;
+      const context = combined.getContext('2d');
+      if (!context) throw new Error('Nuk u krijua dot fotografia e ofertës.');
+      pages.forEach((page, index) => {
+        context.drawImage(page, 0, index * page.height);
       });
-      return canvas;
+      return combined;
     }
 
     function loadLogo() {
@@ -821,20 +860,24 @@
       try {
         const data = readOffer();
         const logo = await loadLogo();
-        const canvas = createOfferCanvas(data, logo);
-        offerBlob = await canvasToBlob(canvas);
-        if (imageUrl) URL.revokeObjectURL(imageUrl);
-        imageUrl = URL.createObjectURL(offerBlob);
-        offerImage.src = imageUrl;
-        offerImage.hidden = false;
+        const pages = createOfferCanvas(data, logo);
+        offerBlob = await canvasToBlob(combineOfferPages(pages));
+        offerPages.replaceChildren(...pages.map((page, index) => {
+          const image = document.createElement('img');
+          image.className = 'offer-page-image';
+          image.alt = `Oferta e përgatitur, faqja ${index + 1}`;
+          image.src = page.toDataURL('image/png');
+          return image;
+        }));
+        offerPages.hidden = false;
         document.getElementById('preview-placeholder').hidden = true;
         downloadButton.disabled = false;
         printButton.disabled = false;
-        status.textContent = 'Oferta u përgatit. Kontrolloni pamjen dhe shkarkojeni ose ruajeni si PDF.';
+        status.textContent = `Oferta u përgatit në ${pages.length} faqe A4. Kontrolloni pamjen dhe shkarkojeni ose ruajeni si PDF.`;
         document.querySelector('.preview-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
       } catch (error) {
         console.error('Përgatitja e ofertës dështoi:', error);
-        status.textContent = `${error.message} Kontrolloni skedarin e logos dhe provoni përsëri.`;
+        status.textContent = `${error.message} Provoni përsëri.`;
       }
     });
 
