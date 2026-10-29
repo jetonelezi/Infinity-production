@@ -376,7 +376,7 @@
 
         <div class="submit-row">
           <button class="submit-button" type="submit">Krijo dhe ndaj kërkesën si foto →</button>
-          <p class="whatsapp-note">WhatsApp do të hapet drejtpërdrejt te numri ynë dhe fotografia e kërkesës do të shkarkohet. Bashkëngjiteni foton në bisedë dhe shtypni Dërgo.</p>
+          <p class="whatsapp-note">Nëse pajisja e mbështet, zgjidhni WhatsApp nga menyja e ndarjes për ta dërguar foton. Përndryshe, fotoja shkarkohet dhe bashkëngjitet manualisht në WhatsApp.</p>
           <div id="share-status" class="share-status" role="status" aria-live="polite"></div>
         </div>
       </form>
@@ -542,19 +542,38 @@
       const status = document.getElementById('share-status');
       const details = getRequestDetails();
       submitButton.disabled = true;
-      submitButton.textContent = 'Duke hapur WhatsApp dhe krijuar foton...';
-      status.textContent = 'Po hapim bisedën në WhatsApp dhe po përgatisim fotografinë e kërkesës.';
-      openWhatsAppMessage();
+      submitButton.textContent = 'Duke përgatitur fotografinë...';
+      status.textContent = 'Po përgatisim fotografinë e kërkesës.';
 
-      createRequestImage(details).then((blob) => {
+      createRequestImage(details).then(async (blob) => {
+        const image = new File([blob], 'kerkesa-infinity-production.png', { type: 'image/png' });
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [image] })) {
+          try {
+            await navigator.share({
+              files: [image],
+              title: 'Kërkesë për rezervim - Infinity Production',
+              text: 'Zgjidhni WhatsApp dhe bisedën me Infinity Production për ta dërguar fotografinë.'
+            });
+            status.textContent = 'Fotografia u nda. Në menynë e ndarjes zgjidhni WhatsApp dhe bisedën me Infinity Production.';
+            return;
+          } catch (error) {
+            if (error.name === 'AbortError') {
+              status.textContent = 'Ndarja u anulua. Shtypni butonin përsëri kur të dëshironi ta dërgoni fotografinë.';
+              return;
+            }
+            console.error('Ndarja e fotos dështoi:', error);
+          }
+        }
+
         downloadRequestImage(blob);
         status.textContent = 'WhatsApp u hap te numri 072 722 060 dhe fotografia u shkarkua. Bashkëngjitni “kerkesa-infinity-production.png” në bisedë, pastaj shtypni Dërgo.';
+        openWhatsAppMessage();
       }).catch((error) => {
         console.error('Ndarja e kërkesës dështoi:', error);
-        status.textContent = 'WhatsApp u hap, por fotografia nuk u përgatit dot. Ju lutemi provoni përsëri ose na kontaktoni me telefon.';
+        status.textContent = 'Fotografia nuk u përgatit dot. Ju lutemi provoni përsëri ose na kontaktoni me telefon.';
       }).finally(() => {
         submitButton.disabled = false;
-        submitButton.textContent = 'Hap WhatsApp dhe krijo foton →';
+        submitButton.textContent = 'Dërgo foton në WhatsApp →';
       });
     });
 
