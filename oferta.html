@@ -83,7 +83,9 @@
     .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
     .action { flex: 1 1 220px; background: rgba(30,30,40,.04); }
     .action.primary { border: 0; background: linear-gradient(100deg, var(--accent), var(--accent2)); color: #fff; }
+    .offer-type-choice[aria-pressed="true"] { border-color: var(--accent); background: #fff4f0; color: #713e31; }
     .action:disabled { opacity: .65; cursor: wait; }
+    .required { color: #b42318; }
     .status { min-height: 1.5em; margin: 14px 0 0; color: var(--muted); }
     .preview-section { margin-top: 38px; }
     .preview-wrap { overflow-x: auto; padding: 16px; border: 1px solid var(--border); border-radius: 14px; background: #e9e9eb; text-align: center; }
@@ -116,10 +118,20 @@
 
     <main>
       <h1>Krijo ofertë për klientin</h1>
-      <p class="intro">Plotësoni të dhënat e dasmës, pajisjet dhe shërbimet. Oferta e përgatitur mund të shkarkohet si fotografi ose të ruhet si PDF.</p>
+      <p class="intro">Zgjidhni Dasmë, Syneti ose Fejesë, plotësoni të dhënat, pajisjet dhe shërbimet. Oferta e përgatitur mund të shkarkohet si fotografi ose të ruhet si PDF.</p>
 
       <form id="offer-form" class="form-card">
         <section class="form-section">
+          <h2>🎉 Lloji i ofertës</h2>
+          <div class="radio-options" role="group" aria-label="Zgjidhni llojin e ofertës">
+            <button class="action offer-type-choice" type="button" data-offer-type-choice="dasme" aria-pressed="true">💍 Dasmë</button>
+            <button class="action offer-type-choice" type="button" data-offer-type-choice="syneti" aria-pressed="false">🎉 Syneti</button>
+            <button class="action offer-type-choice" type="button" data-offer-type-choice="fejesa" aria-pressed="false">💐 Fejesë</button>
+          </div>
+          <input id="offer-type" type="hidden" value="dasme">
+        </section>
+
+        <section class="form-section" data-offer-panel="dasme">
           <h2>☎️ Të dhënat e klientëve</h2>
           <div class="fields">
             <div class="field">
@@ -133,7 +145,23 @@
           </div>
         </section>
 
-        <section class="form-section">
+        <section class="form-section" data-offer-panel="syneti" hidden>
+          <h2>👨‍👩‍👦 Të dhënat e familjes</h2>
+          <div class="fields">
+            <div class="field"><label for="offer-boy-name">Emri i djalit</label><input id="offer-boy-name" autocomplete="off" disabled></div>
+            <div class="field"><label for="offer-father-name">Emri i babait</label><input id="offer-father-name" autocomplete="off" disabled></div>
+            <div class="field"><label for="offer-mother-name">Emri i nënës</label><input id="offer-mother-name" autocomplete="off" disabled></div>
+          </div>
+        </section>
+
+        <section class="form-section" data-offer-panel="fejesa" hidden>
+          <h2>💍 Të dhënat e të fejuarve</h2>
+          <div class="fields">
+            <div class="field full"><label for="offer-engaged-name">Emri dhe mbiemri i të fejuarit</label><input id="offer-engaged-name" autocomplete="off" disabled></div>
+          </div>
+        </section>
+
+        <section class="form-section" data-offer-panel="dasme">
           <h2>📅 Eventet e dasmës</h2>
           <p class="hint">Aktivizoni eventet që do të përfshihen në ofertë. Ato renditen sipas datës kur përgatitet oferta.</p>
 
@@ -199,11 +227,51 @@
           </article>
         </section>
 
+        <section class="form-section" data-offer-panel="syneti" hidden>
+          <h2>📅 Të dhënat e synetisë</h2>
+          <article class="event-card" data-single-event-card>
+            <div class="fields">
+              <div class="field"><label for="offer-syneti-date">Data</label><input id="offer-syneti-date" type="date" disabled></div>
+              <div class="field"><label for="offer-syneti-time">Ora</label><input id="offer-syneti-time" type="time" disabled></div>
+              <div class="field full"><label for="offer-syneti-location">Lokacioni</label><input id="offer-syneti-location" disabled></div>
+              <div class="field"><label for="offer-syneti-cameras">Sa kamera</label><input id="offer-syneti-cameras" type="number" min="0" step="1" placeholder="p.sh. 3" disabled></div>
+              <div class="field"><label for="offer-syneti-people">Sa persona nga ekipi</label><input id="offer-syneti-people" type="number" min="0" step="1" placeholder="p.sh. 4" disabled></div>
+              <div class="field full"><label for="offer-syneti-models">Cilat kamera / pajisje</label><textarea id="offer-syneti-models" placeholder="Shkruani pajisjet e planifikuara" disabled></textarea></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="form-section" data-offer-panel="fejesa" hidden>
+          <h2>📅 Të dhënat e fejesës</h2>
+          <article class="event-card" data-single-event-card>
+            <div class="fields">
+              <div class="field"><label for="offer-engagement-date">Data</label><input id="offer-engagement-date" type="date" disabled></div>
+              <div class="field"><label for="offer-engagement-time">Ora</label><input id="offer-engagement-time" type="time" disabled></div>
+              <div class="field full"><label for="offer-engagement-location">Lokacioni</label><input id="offer-engagement-location" disabled></div>
+              <div class="field"><label for="offer-engagement-cameras">Sa kamera</label><input id="offer-engagement-cameras" type="number" min="0" step="1" placeholder="p.sh. 2" disabled></div>
+              <div class="field"><label for="offer-engagement-people">Sa persona nga ekipi</label><input id="offer-engagement-people" type="number" min="0" step="1" placeholder="p.sh. 3" disabled></div>
+              <div class="field full"><label for="offer-engagement-models">Cilat kamera / pajisje</label><textarea id="offer-engagement-models" placeholder="Shkruani pajisjet e planifikuara" disabled></textarea></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="form-section">
+          <h2>🪑 Të ftuarit <span class="required">*</span></h2>
+          <fieldset class="field full">
+            <legend>Si dëshironi të organizohen të ftuarit?</legend>
+            <div class="radio-options">
+              <label class="radio-choice"><input type="radio" name="Organizimi i të ftuarve" value="Me çifte" required> Me çifte</label>
+              <label class="radio-choice"><input type="radio" name="Organizimi i të ftuarve" value="Vetëm gra" required> Vetëm gra</label>
+              <label class="radio-choice"><input type="radio" name="Organizimi i të ftuarve" value="Gra veçmas, burra veçmas" required> Gra veçmas, burra veçmas</label>
+            </div>
+          </fieldset>
+        </section>
+
         <section class="form-section">
           <h2>✨ Shërbimet dhe kushtet</h2>
           <div class="fields">
             <div class="field full">
-              <label for="services">Shërbimet e përfshira në banket</label>
+              <label for="services">Shërbimet e përfshira në ofertë</label>
               <textarea id="services" name="Shërbimet" placeholder="Shkruani nga një shërbim në rresht, p.sh. Filmimi, fotografimi, fotosesioni, Love-Story, Reels"></textarea>
             </div>
             <div class="field full">
@@ -271,15 +339,52 @@
     let offerBlob = null;
     let imageUrl = null;
 
-    document.querySelectorAll('[data-event-card]').forEach((card) => {
+    function updateEventCard(card) {
       const toggle = card.querySelector('[data-event-toggle]');
       const fields = card.querySelector('.event-fields');
-      toggle.addEventListener('change', () => {
-        fields.hidden = !toggle.checked;
+      if (toggle && fields) {
+        const panel = card.closest('[data-offer-panel]');
+        const enabled = toggle.checked && (!panel || !panel.hidden);
+        fields.hidden = !enabled;
         fields.querySelectorAll('input, textarea').forEach((input) => {
-          input.disabled = !toggle.checked;
+          input.disabled = !enabled;
+        });
+      }
+    }
+
+    function chooseOfferType(type) {
+      document.getElementById('offer-type').value = type;
+      document.querySelectorAll('[data-offer-type-choice]').forEach((button) => {
+        button.setAttribute('aria-pressed', String(button.dataset.offerTypeChoice === type));
+      });
+      document.querySelectorAll('[data-offer-panel]').forEach((panel) => {
+        const active = panel.dataset.offerPanel === type;
+        panel.hidden = !active;
+        panel.querySelectorAll('input, textarea, select').forEach((control) => {
+          control.disabled = !active;
         });
       });
+      document.querySelectorAll('[data-event-card]').forEach(updateEventCard);
+    }
+
+    document.querySelectorAll('[data-offer-type-choice]').forEach((button) => {
+      button.addEventListener('click', () => chooseOfferType(button.dataset.offerTypeChoice));
+    });
+    document.querySelectorAll('[data-event-card]').forEach((card) => {
+      card.querySelector('[data-event-toggle]').addEventListener('change', () => updateEventCard(card));
+    });
+    chooseOfferType('dasme');
+
+    document.querySelectorAll('[data-single-event-card]').forEach((card) => {
+      const panel = card.closest('[data-offer-panel]');
+      panel.querySelectorAll('input, textarea, select').forEach((control) => {
+        control.disabled = true;
+      });
+      if (!panel.hidden) {
+        panel.querySelectorAll('input, textarea, select').forEach((control) => {
+          control.disabled = false;
+        });
+      }
     });
 
     function formatEuro(amount) {
@@ -334,6 +439,7 @@
 
     function readOffer() {
       const value = (id) => document.getElementById(id).value.trim();
+      const type = document.getElementById('offer-type').value;
       const eventDefinitions = [
         {
           id: 'kanagjegji',
@@ -377,7 +483,7 @@
           guestCount: 'guest-count'
         }
       ];
-      const events = eventDefinitions.filter((definition) => {
+      const weddingEvents = eventDefinitions.filter((definition) => {
         return document.querySelector(`[data-event-card="${definition.id}"] [data-event-toggle]`).checked;
       }).map((definition, order) => ({
         title: definition.title,
@@ -389,17 +495,61 @@
         cameraModels: value(definition.cameraModels),
         guestCount: definition.guestCount ? value(definition.guestCount) : '',
         order
-      })).sort((first, second) => {
+      }));
+      const singleEvent = type === 'syneti'
+        ? {
+            title: 'SYNETIA',
+            date: value('offer-syneti-date'),
+            time: value('offer-syneti-time'),
+            location: value('offer-syneti-location'),
+            cameras: value('offer-syneti-cameras'),
+            people: value('offer-syneti-people'),
+            cameraModels: value('offer-syneti-models'),
+            guestCount: '',
+            order: 0
+          }
+        : {
+            title: 'FEJESA',
+            date: value('offer-engagement-date'),
+            time: value('offer-engagement-time'),
+            location: value('offer-engagement-location'),
+            cameras: value('offer-engagement-cameras'),
+            people: value('offer-engagement-people'),
+            cameraModels: value('offer-engagement-models'),
+            guestCount: '',
+            order: 0
+          };
+      const events = (type === 'dasme' ? weddingEvents : [singleEvent]).sort((first, second) => {
         if (!first.date && !second.date) return first.order - second.order;
         if (!first.date) return 1;
         if (!second.date) return -1;
         return first.date.localeCompare(second.date) || first.order - second.order;
       });
 
+      const customerDetails = type === 'dasme'
+        ? {
+            customerTitle: 'DHËNDRI DHE NUSJA',
+            customerName: [value('groom'), value('bride')].filter(Boolean).join(' & ')
+          }
+        : type === 'syneti'
+          ? {
+              customerTitle: 'FAMILJA',
+              customerName: [
+                value('offer-boy-name') && `Djali: ${value('offer-boy-name')}`,
+                value('offer-father-name') && `Babai: ${value('offer-father-name')}`,
+                value('offer-mother-name') && `Nëna: ${value('offer-mother-name')}`
+              ].filter(Boolean).join(' | ')
+            }
+          : {
+              customerTitle: 'TË FEJUARIT',
+              customerName: value('offer-engaged-name')
+            };
+
       return {
-        groom: value('groom'),
-        bride: value('bride'),
+        type,
+        ...customerDetails,
         events,
+        guestArrangement: form.querySelector('input[name="Organizimi i të ftuarve"]:checked').value,
         services: value('services'),
         notes: value('offer-notes')
       };
@@ -463,9 +613,13 @@
         if (event.guestCount) lines.push(`• Numri i të ftuarve: ${event.guestCount}`);
         return { title: `TË DHËNAT E ${event.title}`, lines };
       });
+      sections.push({
+        title: 'ORGANIZIMI I TË FTUARVE',
+        lines: [`• ${data.guestArrangement}`]
+      });
       if (data.services) {
         sections.push({
-          title: 'SHËRBIMET E PËRFSHIRA NË BANKET',
+          title: 'SHËRBIMET E PËRFSHIRA NË OFERTË',
           lines: data.services.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).map((line) => `• ${line}`)
         });
       }
@@ -540,11 +694,11 @@
       context.fillText(formatDate(new Date()), width - margin, 224);
       context.fillStyle = '#a85f4b';
       context.font = 'bold 21px Arial, sans-serif';
-      context.fillText('DHËNDRI DHE NUSJA', width - margin, 256);
+      context.fillText(data.customerTitle, width - margin, 256);
       context.fillStyle = '#22222a';
       context.font = '20px Arial, sans-serif';
-      const couple = [data.groom, data.bride].filter(Boolean).join(' & ') || '____________________________';
-      wrapText(context, couple, rightWidth).slice(0, 2).forEach((line, index) => {
+      const customerName = data.customerName || '____________________________';
+      wrapText(context, customerName, rightWidth).slice(0, 2).forEach((line, index) => {
         context.fillText(line, width - margin, 282 + index * 25);
       });
       context.textAlign = 'left';
