@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="sq">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Krijoni oferta të personalizuara për klientët e Infinity Production.">
+  <title>Krijo ofertë — Infinity Production</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #121316;
+      --panel: #1b1c21;
+      --field: #121316;
+      --text: #fff;
+      --muted: #a8b0b6;
+      --accent: #ff9a7e;
+      --accent2: #a17af5;
+      --border: rgba(255,255,255,.13);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 28px 16px 56px;
+      background: radial-gradient(ellipse at top, #28202f 0, var(--bg) 48rem);
+      color: var(--text);
+      font: 16px/1.55 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    .page { width: min(1050px, 100%); margin: 0 auto; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+    .brand { color: var(--text); font-weight: 800; text-decoration: none; }
+    .back-link { color: var(--muted); text-decoration: none; }
+    h1 { margin: 0 0 8px; font-size: clamp(2rem, 6vw, 2.8rem); line-height: 1.15; }
+    .intro, .hint { color: var(--muted); }
+    .intro { margin: 0 0 24px; }
+    .form-card { padding: clamp(18px, 4vw, 32px); border: 1px solid var(--border); border-radius: 18px; background: rgba(27,28,33,.94); }
+    .form-section + .form-section { margin-top: 30px; padding-top: 26px; border-top: 1px solid var(--border); }
+    h2 { margin: 0 0 17px; font-size: 1.3rem; }
+    .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .field { min-width: 0; }
+    .field.full { grid-column: 1 / -1; }
+    fieldset.field { min-width: 0; margin: 0; padding: 0; border: 0; }
+    label { display: block; margin-bottom: 7px; font-weight: 700; }
+    input:not([type="radio"]), textarea {
+      width: 100%;
+      min-height: 45px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--field);
+      color: var(--text);
+      font: inherit;
+    }
+    input[type="radio"] { width: 18px; height: 18px; accent-color: var(--accent); vertical-align: middle; }
+    .radio-options { display: flex; flex-wrap: wrap; gap: 12px; }
+    .radio-choice { display: inline-flex; align-items: center; gap: 7px; margin: 0; }
+    .money-field { position: relative; }
+    .money-field input { padding-right: 58px; }
+    .currency { position: absolute; top: 50%; right: 13px; color: var(--muted); transform: translateY(-50%); pointer-events: none; }
+    .calculation { padding: 14px; border: 1px solid var(--border); border-radius: 10px; background: rgba(255,255,255,.04); }
+    .calculation p { margin: 4px 0; }
+    .calculation strong { color: var(--accent); }
+    textarea { min-height: 105px; resize: vertical; }
+    input:focus, textarea:focus, button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .hint { margin: 6px 0 0; font-size: .9rem; }
+    .event-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; align-items: end; margin-top: 12px; }
+    .event-row:first-child { margin-top: 0; }
+    .remove-event, .add-event, .action {
+      min-height: 44px;
+      padding: 9px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .remove-event { background: transparent; color: var(--muted); }
+    .add-event { margin-top: 12px; background: rgba(255,255,255,.05); }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .action { flex: 1 1 220px; background: rgba(255,255,255,.06); }
+    .action.primary { border: 0; background: linear-gradient(100deg, var(--accent), var(--accent2)); color: #141218; }
+    .action:disabled { opacity: .65; cursor: wait; }
+    .status { min-height: 1.5em; margin: 14px 0 0; color: var(--muted); }
+    .preview-section { margin-top: 38px; }
+    .preview-wrap { overflow-x: auto; padding: 16px; border: 1px solid var(--border); border-radius: 14px; background: #0e0e11; text-align: center; }
+    #offer-image { display: block; width: min(100%, 760px); height: auto; margin: 0 auto; }
+    .preview-placeholder { padding: 50px 12px; color: var(--muted); }
+    [hidden] { display: none !important; }
+    @media (max-width: 700px) {
+      body { padding: 18px 12px 36px; }
+      .fields { grid-template-columns: 1fr; gap: 14px; }
+      .field.full { grid-column: auto; }
+      .event-row { grid-template-columns: 1fr 1fr; }
+      .event-row .event-name { grid-column: 1 / -1; }
+      .event-row .remove-event { justify-self: start; }
+      .topbar { margin-bottom: 22px; }
+    }
+    @media print {
+      :root { color-scheme: light; }
+      @page { size: A4 portrait; margin: 0; }
+      html, body { width: 210mm; height: 297mm; min-height: 0; margin: 0; padding: 0; background: #fff; }
+      .topbar, main > h1, main > .intro, #offer-form, .preview-section > h2, .preview-section > p { display: none !important; }
+      main { display: block; }
+      .page, main, .preview-section, .preview-wrap { width: 210mm; height: 297mm; margin: 0; padding: 0; border: 0; background: #fff; }
+      #offer-image { width: 210mm; height: 297mm; max-width: none; margin: 0; object-fit: fill; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <a class="brand" href="index.html">Infinity Production</a>
+      <a class="back-link" href="index.html">← Faqja kryesore</a>
+    </header>
+
+    <main>
+      <h1>Krijo ofertë për klientin</h1>
+      <p class="intro">Plotësoni të dhënat e dasmës, pajisjet dhe shërbimet. Oferta e përgatitur mund të shkarkohet si fotografi ose të ruhet si PDF.</p>
+
+      <form id="offer-form" class="form-card">
+        <section class="form-section">
+          <h2>👰🤵 Klienti dhe banketi</h2>
+          <div class="fields">
+            <div class="field">
+              <label for="groom">Emri i dhëndrit</label>
+              <input id="groom" name="Dhëndri" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="bride">Emri i nuses</label>
+              <input id="bride" name="Nusja" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="banquet-date">Data e banketit</label>
+              <input id="banquet-date" name="Data e banketit" type="date">
+            </div>
+            <div class="field">
+              <label for="banquet-time">Ora e fillimit</label>
+              <input id="banquet-time" name="Ora e fillimit" type="time">
+            </div>
+            <div class="field">
+              <label for="banquet-location">Restoranti / salla</label>
+              <input id="banquet-location" name="Restoranti / salla">
+            </div>
+            <div class="field">
+              <label for="guest-count">Numri i mysafirëve</label>
+              <input id="guest-count" name="Numri i mysafirëve" placeholder="p.sh. 200-250">
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>🎥 Kamerat dhe pajisjet</h2>
+          <div class="fields">
+            <div class="field">
+              <label for="camera-count">Numri i kamerave</label>
+              <input id="camera-count" name="Numri i kamerave" type="number" min="0" step="1" placeholder="p.sh. 3">
+            </div>
+            <div class="field">
+              <label for="crew-count">Numri i operatorëve</label>
+              <input id="crew-count" name="Numri i operatorëve" type="number" min="0" step="1" placeholder="p.sh. 3">
+            </div>
+            <div class="field full">
+              <label for="equipment">Pajisjet që do të përdoren</label>
+              <textarea id="equipment" name="Pajisjet" placeholder="Shkruani nga një pajisje në rresht, p.sh.&#10;Sony FX3&#10;Kamerë Sony A7 IV&#10;Dron DJI&#10;Kran / Gimbal"></textarea>
+              <p class="hint">Shënoni modelet e kamerave dhe pajisjet që keni planifikuar për këtë event.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>📅 Eventet e tjera</h2>
+          <p class="hint">Shtoni marrjen e nuses, natën e dhëndërisë, kanagjegjin ose evente të tjera.</p>
+          <div id="events-list"></div>
+          <button id="add-event" class="add-event" type="button">+ Shto event</button>
+        </section>
+
+        <section class="form-section">
+          <h2>✨ Shërbimet dhe oferta</h2>
+          <div class="fields">
+            <div class="field full">
+              <label for="services">Shërbimet e përfshira</label>
+              <textarea id="services" name="Shërbimet" placeholder="Shkruani nga një shërbim në rresht, p.sh.&#10;Filmimi i banketit&#10;Fotografimi i eventit&#10;Foto sesion&#10;Love-Story trailer&#10;Reels gjatë banketit"></textarea>
+            </div>
+            <div class="field">
+              <label for="price">Çmimi i përgjithshëm <span aria-hidden="true">*</span></label>
+              <div class="money-field">
+                <input id="price" name="Çmimi i përgjithshëm" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="p.sh. 1200" required>
+                <span class="currency">EUR (€)</span>
+              </div>
+            </div>
+            <fieldset class="field">
+              <legend style="display:block;margin-bottom:7px;font-weight:700">A ka lirim? <span aria-hidden="true">*</span></legend>
+              <div class="radio-options">
+                <label class="radio-choice"><input type="radio" name="Ka lirim" value="Po" required> Po</label>
+                <label class="radio-choice"><input type="radio" name="Ka lirim" value="Jo" required> Jo</label>
+              </div>
+            </fieldset>
+            <div id="discount-field" class="field" hidden>
+              <label for="discount">Shuma e lirimit</label>
+              <div class="money-field">
+                <input id="discount" name="Shuma e lirimit" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="p.sh. 100" disabled>
+                <span class="currency">EUR (€)</span>
+              </div>
+            </div>
+            <div class="field">
+              <label for="advance">Para-pagesa (nëse ka)</label>
+              <div class="money-field">
+                <input id="advance" name="Para-pagesa" type="number" min="0" step="0.01" inputmode="decimal" placeholder="p.sh. 200">
+                <span class="currency">EUR (€)</span>
+              </div>
+            </div>
+            <div class="field full">
+              <div id="price-calculation" class="calculation" aria-live="polite">
+                <p>Çmimi pas lirimit: <strong id="discounted-price">—</strong></p>
+                <p>Pagesa e mbetur: <strong id="remaining-payment">—</strong></p>
+              </div>
+            </div>
+            <div class="field full">
+              <label for="offer-notes">Shënime ose kushte të ofertës</label>
+              <textarea id="offer-notes" name="Shënime" placeholder="Detaje shtesë, mënyra e pagesës, afati i vlefshmërisë së ofertës..."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <div class="actions">
+          <button class="action primary" type="submit">Përgatit ofertën</button>
+          <button id="download-image" class="action" type="button" disabled>Shkarko si fotografi</button>
+          <button id="print-offer" class="action" type="button" disabled>Printo / Ruaj si PDF</button>
+        </div>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+      </form>
+
+      <section class="preview-section">
+        <h2>Paraqitja e ofertës</h2>
+        <p class="hint">Kontrolloni ofertën para se ta shkarkoni ose printoni.</p>
+        <div class="preview-wrap">
+          <p id="preview-placeholder" class="preview-placeholder">Plotësoni formularin dhe shtypni “Përgatit ofertën”.</p>
+          <img id="offer-image" alt="Oferta e përgatitur për klientin" hidden>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <template id="event-template">
+    <div class="event-row">
+      <div class="event-name">
+        <label>Emri i eventit</label>
+        <input data-event-field="name" placeholder="p.sh. Marrja e nuses">
+      </div>
+      <div>
+        <label>Data dhe ora</label>
+        <input data-event-field="date" placeholder="p.sh. 15.06.2027, 12:00">
+      </div>
+      <div>
+        <label>Lokacioni</label>
+        <input data-event-field="location" placeholder="Lokacioni">
+      </div>
+      <button class="remove-event" type="button" aria-label="Hiq eventin">Hiq</button>
+    </div>
+  </template>
+
+  <script>
+    const form = document.getElementById('offer-form');
+    const eventsList = document.getElementById('events-list');
+    const offerImage = document.getElementById('offer-image');
+    const status = document.getElementById('status');
+    const downloadButton = document.getElementById('download-image');
+    const printButton = document.getElementById('print-offer');
+    let offerBlob = null;
+    let imageUrl = null;
+
+    function addEventRow() {
+      const row = document.getElementById('event-template').content.firstElementChild.cloneNode(true);
+      row.querySelector('.remove-event').addEventListener('click', () => row.remove());
+      eventsList.append(row);
+    }
+
+    document.getElementById('add-event').addEventListener('click', addEventRow);
+    addEventRow();
+
+    function readOffer() {
+      const value = (id) => document.getElementById(id).value.trim();
+      const date = value('banquet-date');
+      const events = [...eventsList.querySelectorAll('.event-row')].map((row) => ({
+        name: row.querySelector('[data-event-field="name"]').value.trim(),
+        date: row.querySelector('[data-event-field="date"]').value.trim(),
+        location: row.querySelector('[data-event-field="location"]').value.trim()
+      })).filter((event) => event.name || event.date || event.location);
+
+      const totalPrice = Number(value('price'));
+      const discountSelected = form.querySelector('input[name="Ka lirim"]:checked')?.value === 'Po';
+      const discount = discountSelected ? Number(value('discount')) : 0;
+      const advance = Number(value('advance')) || 0;
+      return {
+        groom: value('groom'),
+        bride: value('bride'),
+        banquetDate: date ? new Date(`${date}T12:00:00`).toLocaleDateString('sq-AL') : '',
+        banquetTime: value('banquet-time'),
+        banquetLocation: value('banquet-location'),
+        guestCount: value('guest-count'),
+        cameraCount: value('camera-count'),
+        crewCount: value('crew-count'),
+        equipment: value('equipment'),
+        events,
+        services: value('services'),
+        totalPrice,
+        hasDiscount: discountSelected,
+        discount,
+        finalPrice: totalPrice - discount,
+        advance,
+        remaining: totalPrice - discount - advance,
+        notes: value('offer-notes')
+      };
+    }
+
+    function formatEuro(amount) {
+      return new Intl.NumberFormat('sq-MK', {
+        style: 'currency',
+        currency: 'EUR',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(amount);
+    }
+
+    function updatePriceCalculation() {
+      const total = Number(document.getElementById('price').value) || 0;
+      const discountEnabled = form.querySelector('input[name="Ka lirim"]:checked')?.value === 'Po';
+      const discountInput = document.getElementById('discount');
+      const discount = discountEnabled ? Number(discountInput.value) || 0 : 0;
+      const advance = Number(document.getElementById('advance').value) || 0;
+      const finalPrice = Math.max(0, total - discount);
+      document.getElementById('discounted-price').textContent = total > 0
+        ? formatEuro(finalPrice)
+        : '—';
+      document.getElementById('remaining-payment').textContent = total > 0
+        ? formatEuro(Math.max(0, finalPrice - advance))
+        : '—';
+
+      discountInput.max = total > 0 ? String(total) : '';
+      document.getElementById('advance').max = finalPrice > 0 ? String(finalPrice) : '';
+      discountInput.setCustomValidity(discountEnabled && discount > total
+        ? 'Lirimi nuk mund të jetë më i madh se çmimi i përgjithshëm.'
+        : '');
+      document.getElementById('advance').setCustomValidity(advance > finalPrice
+        ? 'Para-pagesa nuk mund të jetë më e madhe se çmimi pas lirimit.'
+        : '');
+    }
+
+    function updateDiscountField() {
+      const discountEnabled = form.querySelector('input[name="Ka lirim"]:checked')?.value === 'Po';
+      const discountField = document.getElementById('discount-field');
+      const discountInput = document.getElementById('discount');
+      discountField.hidden = !discountEnabled;
+      discountInput.disabled = !discountEnabled;
+      discountInput.required = discountEnabled;
+      updatePriceCalculation();
+    }
+
+    form.addEventListener('change', (event) => {
+      if (event.target.name === 'Ka lirim') updateDiscountField();
+      updatePriceCalculation();
+    });
+    form.addEventListener('input', updatePriceCalculation);
+
+    function wrapText(context, text, maxWidth) {
+      const lines = [];
+      String(text).split(/\r?\n/).forEach((paragraph) => {
+        if (!paragraph.trim()) {
+          lines.push('');
+          return;
+        }
+        let line = '';
+        paragraph.split(/\s+/).forEach((word) => {
+          let remainingWord = word;
+          while (remainingWord && context.measureText(line ? `${line} ${remainingWord}` : remainingWord).width > maxWidth) {
+            if (line) {
+              lines.push(line);
+              line = '';
+            } else {
+              let part = '';
+              while (remainingWord && context.measureText(part + remainingWord[0]).width <= maxWidth) {
+                part += remainingWord[0];
+                remainingWord = remainingWord.slice(1);
+              }
+              if (!part) part = remainingWord.slice(0, 1);
+              lines.push(part);
+              remainingWord = remainingWord.slice(part.length);
+            }
+          }
+          if (remainingWord) line = line ? `${line} ${remainingWord}` : remainingWord;
+        });
+        if (line) lines.push(line);
+      });
+      return lines;
+    }
+
+    function createOfferCanvas(data, logo) {
+      const width = 1400;
+      const height = 1980;
+      const margin = 92;
+      const contentWidth = width - margin * 2;
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      if (!context) throw new Error('Nuk u krijua dot fotografia e ofertës.');
+      canvas.width = width;
+      canvas.height = height;
+
+      const sections = [];
+      const addSection = (title, items) => {
+        const lines = items.filter((item) => item.value).map((item) => `• ${item.label}: ${item.value}`);
+        if (lines.length) sections.push({ title, lines });
+      };
+      const listLines = (text) => text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).map((line) => `• ${line}`);
+
+      addSection('TË DHËNAT E BANKETIT', [
+        { label: 'Çifti', value: [data.groom, data.bride].filter(Boolean).join(' & ') },
+        { label: 'Data', value: data.banquetDate },
+        { label: 'Ora e fillimit', value: data.banquetTime },
+        { label: 'Restoranti / salla', value: data.banquetLocation },
+        { label: 'Numri i mysafirëve', value: data.guestCount }
+      ]);
+      addSection('EKIPI DHE PAJISJET', [
+        { label: 'Kamera', value: data.cameraCount },
+        { label: 'Operatorë', value: data.crewCount }
+      ]);
+      if (data.equipment) sections.push({ title: 'PAJISJET E PLANIFIKUARA', lines: listLines(data.equipment) });
+      if (data.events.length) {
+        sections.push({
+          title: 'EVENTET E TJERA',
+          lines: data.events.map((event) => `• ${[event.name, event.date, event.location].filter(Boolean).join(' — ')}`)
+        });
+      }
+      if (data.services) sections.push({ title: 'SHËRBIMET E PËRFSHIRA', lines: listLines(data.services) });
+      if (data.notes) sections.push({ title: 'SHËNIME DHE KUSHTE', lines: wrapText(context, data.notes, contentWidth - 64) });
+
+      const priceCardHeight = data.hasDiscount ? 202 : 158;
+      const signatureAndPaymentHeight = 226;
+      const gratitude = 'Faleminderit që na besuat për ditën tuaj të veçantë. Ju urojmë momente të mbushura me gëzim, dashuri dhe kujtime të paharrueshme.';
+      context.font = '20px Arial, sans-serif';
+      const gratitudeLines = wrapText(context, gratitude, contentWidth - 40);
+      const sectionGap = 14;
+      const contentStart = 365;
+      const contentEnd = height - 60;
+      let fontSize = 24;
+      let sectionLayouts;
+      while (fontSize >= 14) {
+        const lineHeight = fontSize + 12;
+        context.font = `${fontSize}px Arial, sans-serif`;
+        sectionLayouts = sections.map((section) => {
+          const lines = section.lines.flatMap((line) => wrapText(context, line, contentWidth - 64));
+          return {
+            ...section,
+            wrappedLines: lines,
+            height: 54 + lines.length * lineHeight + 24
+          };
+        });
+        const requiredHeight = sectionLayouts.reduce((total, section) => total + section.height, 0) +
+          Math.max(0, sectionLayouts.length - 1) * sectionGap +
+          18 + priceCardHeight + 18 + signatureAndPaymentHeight - 24 + 32 + gratitudeLines.length * 28 + 10;
+        if (contentStart + requiredHeight <= contentEnd) break;
+        fontSize -= 1;
+      }
+      if (fontSize < 14) {
+        throw new Error('Përmbajtja është shumë e gjatë për një faqe A4. Shkurtoni shënimet ose listat.');
+      }
+      const lineHeight = fontSize + 12;
+      const sectionsHeight = sectionLayouts.reduce((total, section) => total + section.height, 0) +
+        Math.max(0, sectionLayouts.length - 1) * sectionGap;
+      const flowHeight = sectionsHeight + 18 + priceCardHeight + 18 +
+        signatureAndPaymentHeight - 24 + 32 + gratitudeLines.length * 28 + 10;
+      const distributedGap = Math.max(0, (contentEnd - contentStart - flowHeight) / (sectionLayouts.length + 2));
+      let y = contentStart;
+
+      const background = context.createLinearGradient(0, 0, width, height);
+      background.addColorStop(0, '#17151f');
+      background.addColorStop(1, '#28202f');
+      context.fillStyle = background;
+      context.fillRect(0, 0, width, height);
+
+      context.fillStyle = '#ff9a7e';
+      context.font = 'bold 54px Georgia, serif';
+      context.fillText('OFERTA', margin, 94);
+      context.fillStyle = '#ffffff';
+      context.font = 'bold 28px Arial, sans-serif';
+      context.fillText('Infinity Production', margin, 150);
+      context.fillStyle = '#d7d0de';
+      context.font = '22px Arial, sans-serif';
+      context.fillText('072-722-060', margin, 190);
+      context.fillText('www.infinity-production.com', margin, 226);
+      context.fillText('Tetovë', margin, 262);
+      context.fillStyle = '#c9c3d1';
+      context.font = '19px Arial, sans-serif';
+      context.fillText(`Data e ofertës: ${new Date().toLocaleDateString('sq-AL')}`, margin, 314);
+
+      const logoMaxWidth = 230;
+      const logoMaxHeight = 220;
+      const scale = Math.min(logoMaxWidth / logo.naturalWidth, logoMaxHeight / logo.naturalHeight);
+      const logoWidth = logo.naturalWidth * scale;
+      const logoHeight = logo.naturalHeight * scale;
+      context.drawImage(logo, width - margin - logoWidth, 50, logoWidth, logoHeight);
+      context.fillStyle = '#ff9a7e';
+      context.fillRect(margin, 340, contentWidth, 3);
+
+      sectionLayouts.forEach((section) => {
+        context.fillStyle = 'rgba(255,255,255,.075)';
+        context.beginPath();
+        context.roundRect(margin, y, contentWidth, section.height, 18);
+        context.fill();
+        context.fillStyle = '#ffb09b';
+        context.font = `bold ${fontSize + 2}px Arial, sans-serif`;
+        context.fillText(section.title, margin + 30, y + 38);
+        context.fillStyle = '#ffffff';
+        context.font = `${fontSize}px Arial, sans-serif`;
+        section.wrappedLines.forEach((line, index) => {
+          context.fillText(line, margin + 32, y + 68 + index * lineHeight);
+        });
+        y += section.height + sectionGap + distributedGap;
+      });
+
+      if (sectionLayouts.length) y -= sectionGap + distributedGap;
+      const priceY = y + 18 + distributedGap;
+      context.fillStyle = 'rgba(255,255,255,.09)';
+      context.beginPath();
+      context.roundRect(margin, priceY, contentWidth, priceCardHeight, 18);
+      context.fill();
+      context.fillStyle = '#ffb09b';
+      context.font = 'bold 27px Arial, sans-serif';
+      context.fillText('ÇMIMI I PËRGJITHSHËM', margin + 30, priceY + 42);
+      context.fillStyle = '#ffffff';
+      context.font = '24px Arial, sans-serif';
+      context.fillText(`Çmimi i përgjithshëm: ${formatEuro(data.totalPrice)}`, margin + 32, priceY + 82);
+      if (data.hasDiscount) {
+        context.fillText(`Lirimi: −${formatEuro(data.discount)}`, margin + 32, priceY + 118);
+        context.fillStyle = '#ffb09b';
+        context.font = 'bold 29px Arial, sans-serif';
+        context.fillText(`Çmimi me lirim: ${formatEuro(data.finalPrice)}`, margin + 32, priceY + 164);
+      } else {
+        context.fillStyle = '#ffb09b';
+        context.font = 'bold 29px Arial, sans-serif';
+        context.fillText(`Çmimi përfundimtar: ${formatEuro(data.finalPrice)}`, margin + 32, priceY + 128);
+      }
+
+      const lowerY = priceY + priceCardHeight + 18 + distributedGap;
+      const columnGap = 24;
+      const columnWidth = (contentWidth - columnGap) / 2;
+      const paymentX = margin + columnWidth + columnGap;
+      const columnHeight = signatureAndPaymentHeight - 24;
+      context.fillStyle = 'rgba(255,255,255,.06)';
+      context.beginPath();
+      context.roundRect(margin, lowerY, columnWidth, columnHeight, 18);
+      context.roundRect(paymentX, lowerY, columnWidth, columnHeight, 18);
+      context.fill();
+
+      context.fillStyle = '#ffb09b';
+      context.font = 'bold 23px Arial, sans-serif';
+      context.fillText('NËNSHKRIMET', margin + 24, lowerY + 38);
+      context.fillStyle = '#ffffff';
+      context.font = '21px Arial, sans-serif';
+      context.fillText('Nënshkrimi nga: Jeton Elezi', margin + 24, lowerY + 76);
+      context.strokeStyle = 'rgba(255,255,255,.6)';
+      context.lineWidth = 2;
+      context.beginPath();
+      context.moveTo(margin + 24, lowerY + 112);
+      context.lineTo(margin + columnWidth - 24, lowerY + 112);
+      context.stroke();
+      context.fillText('Nënshkrimi i klientit', margin + 24, lowerY + 154);
+      context.beginPath();
+      context.moveTo(margin + 24, lowerY + 190);
+      context.lineTo(margin + columnWidth - 24, lowerY + 190);
+      context.stroke();
+
+      context.fillStyle = '#ffb09b';
+      context.font = 'bold 23px Arial, sans-serif';
+      context.fillText('PAGESAT', paymentX + 24, lowerY + 38);
+      context.fillStyle = '#ffffff';
+      context.font = '22px Arial, sans-serif';
+      context.fillText(`Para-pagesa: ${formatEuro(data.advance)}`, paymentX + 24, lowerY + 88);
+      context.fillText(`Pagesa e mbetur: ${formatEuro(data.remaining)}`, paymentX + 24, lowerY + 138);
+
+      context.fillStyle = '#c9c3d1';
+      context.font = '20px Arial, sans-serif';
+      context.textAlign = 'center';
+      const gratitudeY = lowerY + columnHeight + 32 + distributedGap;
+      gratitudeLines.forEach((line, index) => {
+        context.fillText(line, width / 2, gratitudeY + 22 + index * 28);
+      });
+      return canvas;
+    }
+
+    function loadLogo() {
+      return new Promise((resolve, reject) => {
+        const logo = new Image();
+        logo.onload = () => resolve(logo);
+        logo.onerror = () => reject(new Error('Logoja “Logo Infinity.png” nuk u gjet ose nuk u hap.'));
+        logo.src = 'Logo%20Infinity.png';
+      });
+    }
+
+    function canvasToBlob(canvas) {
+      return new Promise((resolve, reject) => {
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+          else reject(new Error('Nuk u ruajt dot fotografia e ofertës.'));
+        }, 'image/png');
+      });
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      status.textContent = 'Po përgatitet oferta...';
+      downloadButton.disabled = true;
+      printButton.disabled = true;
+      try {
+        const data = readOffer();
+        const logo = await loadLogo();
+        const canvas = createOfferCanvas(data, logo);
+        offerBlob = await canvasToBlob(canvas);
+        if (imageUrl) URL.revokeObjectURL(imageUrl);
+        imageUrl = URL.createObjectURL(offerBlob);
+        offerImage.src = imageUrl;
+        offerImage.hidden = false;
+        document.getElementById('preview-placeholder').hidden = true;
+        downloadButton.disabled = false;
+        printButton.disabled = false;
+        status.textContent = 'Oferta u përgatit. Kontrolloni pamjen dhe shkarkojeni ose ruajeni si PDF.';
+        document.querySelector('.preview-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (error) {
+        console.error('Përgatitja e ofertës dështoi:', error);
+        status.textContent = `${error.message} Kontrolloni skedarin e logos dhe provoni përsëri.`;
+      }
+    });
+
+    downloadButton.addEventListener('click', () => {
+      if (!offerBlob) return;
+      const url = URL.createObjectURL(offerBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'oferta-infinity-production.png';
+      link.click();
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    });
+
+    printButton.addEventListener('click', () => window.print());
+  </script>
+</body>
+</html>
