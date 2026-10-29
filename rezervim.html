@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Plotësoni kërkesën për rezervim të dasmës ose synetisë me Infinity Production.">
+  <meta name="description" content="Plotësoni kërkesën për rezervim të dasmës, synetisë ose fejesës me Infinity Production.">
   <title>Rezervime — Infinity Production</title>
   <style>
     :root {
@@ -35,7 +35,7 @@
     .back-link:hover { color: var(--text); }
     h1 { margin: 0 0 8px; font-size: clamp(2rem, 6vw, 3rem); line-height: 1.15; }
     .intro { margin: 0 0 26px; color: var(--muted); }
-    .event-picker { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 24px 0; }
+    .event-picker { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 24px 0; }
     .event-choice {
       min-height: 92px;
       border: 1px solid var(--border);
@@ -135,6 +135,7 @@
       <div class="event-picker" role="group" aria-label="Zgjidhni llojin e eventit">
         <button class="event-choice" type="button" data-event-choice="dasme" aria-pressed="false">💍 Dasmë</button>
         <button class="event-choice" type="button" data-event-choice="syneti" aria-pressed="false">🎉 Syneti</button>
+        <button class="event-choice" type="button" data-event-choice="fejesa" aria-pressed="false">💐 Fejesë</button>
       </div>
 
       <form id="booking-form" class="form-card" hidden>
@@ -325,6 +326,18 @@
           </section>
 
           <section class="form-section">
+            <h2 class="section-heading">🪑 Të ftuarit <span class="required">*</span></h2>
+            <fieldset>
+              <legend>Si dëshironi të organizohen të ftuarit?</legend>
+              <div class="choice-list">
+                <label class="choice"><input type="radio" name="Organizimi i të ftuarve - Dasmë" data-summary-label="Organizimi i të ftuarve" value="Me çifte" required disabled> Me çifte</label>
+                <label class="choice"><input type="radio" name="Organizimi i të ftuarve - Dasmë" data-summary-label="Organizimi i të ftuarve" value="Vetëm gra" required disabled> Vetëm gra</label>
+                <label class="choice"><input type="radio" name="Organizimi i të ftuarve - Dasmë" data-summary-label="Organizimi i të ftuarve" value="Gra veçmas, burra veçmas" required disabled> Gra veçmas, burra veçmas</label>
+              </div>
+            </fieldset>
+          </section>
+
+          <section class="form-section">
             <h2 class="section-heading">Informacion shtesë</h2>
             <div class="field">
               <label for="wedding-notes">Shkruani çdo gjë tjetër që dëshironi të ndani me ne</label>
@@ -365,11 +378,65 @@
             </div>
           </section>
           <section class="form-section">
+            <h2 class="section-heading">🪑 Të ftuarit <span class="required">*</span></h2>
+            <fieldset>
+              <legend>Si dëshironi të organizohen të ftuarit?</legend>
+              <div class="choice-list">
+                <label class="choice"><input type="radio" name="Organizimi i të ftuarve - Syneti" data-summary-label="Organizimi i të ftuarve" value="Me çifte" required disabled> Me çifte</label>
+                <label class="choice"><input type="radio" name="Organizimi i të ftuarve - Syneti" data-summary-label="Organizimi i të ftuarve" value="Vetëm gra" required disabled> Vetëm gra</label>
+                <label class="choice"><input type="radio" name="Organizimi i të ftuarve - Syneti" data-summary-label="Organizimi i të ftuarve" value="Gra veçmas, burra veçmas" required disabled> Gra veçmas, burra veçmas</label>
+              </div>
+            </fieldset>
+          </section>
+          <section class="form-section">
             <h2 class="section-heading">Informacion shtesë</h2>
             <div class="field">
               <label for="syneti-notes">Shkruani çdo gjë tjetër që dëshironi të ndani me ne</label>
               <p class="hint">Ide, pyetje ose detaje specifike...</p>
               <textarea id="syneti-notes" name="Informacion shtesë" placeholder="Shkruani këtu..." disabled></textarea>
+            </div>
+          </section>
+        </div>
+
+        <div id="engagement-fields" data-event-panel="fejesa" hidden>
+          <section class="form-section">
+            <h2 class="section-heading">💐 Fejesa</h2>
+            <div class="fields">
+              <div class="field full">
+                <label for="engaged-name">Emri dhe mbiemri i të fejuarit <span class="required">*</span></label>
+                <input id="engaged-name" name="Emri dhe mbiemri i të fejuarit" required disabled>
+              </div>
+              <div class="field">
+                <label for="engagement-location">Lokacioni <span class="required">*</span></label>
+                <input id="engagement-location" name="Lokacioni i fejesës" required disabled>
+              </div>
+              <div class="field">
+                <label for="engagement-date">Data <span class="required">*</span></label>
+                <input id="engagement-date" name="Data e fejesës" type="date" required disabled>
+              </div>
+              <div class="field">
+                <label for="engagement-time">Ora <span class="required">*</span></label>
+                <input id="engagement-time" name="Ora e fejesës" type="time" required disabled>
+              </div>
+            </div>
+          </section>
+          <section class="form-section">
+            <h2 class="section-heading">🪑 Të ftuarit <span class="required">*</span></h2>
+            <fieldset>
+              <legend>Si dëshironi të organizohen të ftuarit?</legend>
+              <div class="choice-list">
+                <label class="choice"><input type="radio" name="Organizimi i të ftuarve - Fejesë" data-summary-label="Organizimi i të ftuarve" value="Me çifte" required disabled> Me çifte</label>
+                <label class="choice"><input type="radio" name="Organizimi i të ftuarve - Fejesë" data-summary-label="Organizimi i të ftuarve" value="Vetëm gra" required disabled> Vetëm gra</label>
+                <label class="choice"><input type="radio" name="Organizimi i të ftuarve - Fejesë" data-summary-label="Organizimi i të ftuarve" value="Gra veçmas, burra veçmas" required disabled> Gra veçmas, burra veçmas</label>
+              </div>
+            </fieldset>
+          </section>
+          <section class="form-section">
+            <h2 class="section-heading">Informacion shtesë</h2>
+            <div class="field">
+              <label for="engagement-notes">Shkruani çdo gjë tjetër që dëshironi të ndani me ne</label>
+              <p class="hint">Ide, pyetje ose detaje specifike...</p>
+              <textarea id="engagement-notes" name="Informacion shtesë" placeholder="Shkruani këtu..." disabled></textarea>
             </div>
           </section>
         </div>
@@ -407,7 +474,12 @@
 
     function chooseEvent(type) {
       form.hidden = false;
-      eventType.value = type === 'dasme' ? 'Dasmë' : 'Syneti';
+      const eventNames = {
+        dasme: 'Dasmë',
+        syneti: 'Syneti',
+        fejesa: 'Fejesë'
+      };
+      eventType.value = eventNames[type];
       eventChoices.forEach((button) => {
         button.setAttribute('aria-pressed', String(button.dataset.eventChoice === type));
       });
@@ -472,6 +544,24 @@
             'Emri i djalit', 'Emri i babait', 'Emri i nënës'
           ]),
           ...section('📅 TË DHËNAT E EVENTIT', ['Lokacioni', 'Data', 'Ora']),
+          ...section('🪑 TË FTUARIT', ['Organizimi i të ftuarve']),
+          ...section('📝 INFORMACION SHTESË', ['Informacion shtesë']),
+          'Faleminderit!'
+        ].join('\n');
+      }
+
+      if (eventType.value === 'Fejesë') {
+        return [
+          ...greeting,
+          '💐 KËRKESË PËR FEJESË',
+          '',
+          ...section('💍 TË DHËNAT E FEJESËS', [
+            'Emri dhe mbiemri i të fejuarit',
+            'Lokacioni i fejesës',
+            'Data e fejesës',
+            'Ora e fejesës'
+          ]),
+          ...section('🪑 TË FTUARIT', ['Organizimi i të ftuarve']),
           ...section('📝 INFORMACION SHTESË', ['Informacion shtesë']),
           'Faleminderit!'
         ].join('\n');
@@ -521,6 +611,7 @@
           'Data e fotosesionit ditën tjetër',
           'Lokacioni i fotosesionit ditën tjetër'
         ]),
+        ...section('🪑 TË FTUARIT', ['Organizimi i të ftuarve']),
         ...section('📝 INFORMACION SHTESË', ['Informacion shtesë']),
         'Faleminderit!'
       ].join('\n');
