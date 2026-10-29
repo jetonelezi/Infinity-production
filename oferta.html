@@ -7,15 +7,15 @@
   <title>Krijo ofertë — Infinity Production</title>
   <style>
     :root {
-      color-scheme: dark;
-      --bg: #121316;
-      --panel: #1b1c21;
-      --field: #121316;
-      --text: #fff;
-      --muted: #a8b0b6;
-      --accent: #ff9a7e;
-      --accent2: #a17af5;
-      --border: rgba(255,255,255,.13);
+      color-scheme: light;
+      --bg: #f3f3f5;
+      --panel: #fff;
+      --field: #fff;
+      --text: #202027;
+      --muted: #666873;
+      --accent: #c8775f;
+      --accent2: #8062bd;
+      --border: rgba(35,35,45,.18);
     }
 
     * { box-sizing: border-box; }
@@ -23,7 +23,7 @@
       min-height: 100vh;
       margin: 0;
       padding: 28px 16px 56px;
-      background: radial-gradient(ellipse at top, #28202f 0, var(--bg) 48rem);
+      background: radial-gradient(ellipse at top, #fff 0, var(--bg) 48rem);
       color: var(--text);
       font: 16px/1.55 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
     }
@@ -34,7 +34,7 @@
     h1 { margin: 0 0 8px; font-size: clamp(2rem, 6vw, 2.8rem); line-height: 1.15; }
     .intro, .hint { color: var(--muted); }
     .intro { margin: 0 0 24px; }
-    .form-card { padding: clamp(18px, 4vw, 32px); border: 1px solid var(--border); border-radius: 18px; background: rgba(27,28,33,.94); }
+    .form-card { padding: clamp(18px, 4vw, 32px); border: 1px solid var(--border); border-radius: 18px; background: rgba(255,255,255,.96); }
     .form-section + .form-section { margin-top: 30px; padding-top: 26px; border-top: 1px solid var(--border); }
     h2 { margin: 0 0 17px; font-size: 1.3rem; }
     .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
@@ -42,7 +42,7 @@
     .field.full { grid-column: 1 / -1; }
     fieldset.field { min-width: 0; margin: 0; padding: 0; border: 0; }
     label { display: block; margin-bottom: 7px; font-weight: 700; }
-    input:not([type="radio"]), textarea {
+    input:not([type="radio"]):not([type="checkbox"]), textarea {
       width: 100%;
       min-height: 45px;
       padding: 10px 12px;
@@ -52,21 +52,25 @@
       color: var(--text);
       font: inherit;
     }
-    input[type="radio"] { width: 18px; height: 18px; accent-color: var(--accent); vertical-align: middle; }
+    input[type="radio"], input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); vertical-align: middle; }
     .radio-options { display: flex; flex-wrap: wrap; gap: 12px; }
     .radio-choice { display: inline-flex; align-items: center; gap: 7px; margin: 0; }
     .money-field { position: relative; }
     .money-field input { padding-right: 58px; }
     .currency { position: absolute; top: 50%; right: 13px; color: var(--muted); transform: translateY(-50%); pointer-events: none; }
-    .calculation { padding: 14px; border: 1px solid var(--border); border-radius: 10px; background: rgba(255,255,255,.04); }
+    .calculation { padding: 14px; border: 1px solid var(--border); border-radius: 10px; background: rgba(30,30,40,.03); }
     .calculation p { margin: 4px 0; }
     .calculation strong { color: var(--accent); }
     textarea { min-height: 105px; resize: vertical; }
     input:focus, textarea:focus, button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     .hint { margin: 6px 0 0; font-size: .9rem; }
-    .event-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; align-items: end; margin-top: 12px; }
-    .event-row:first-child { margin-top: 0; }
-    .remove-event, .add-event, .action {
+    .event-card { margin-top: 16px; padding: 18px; border: 1px solid var(--border); border-radius: 14px; background: #fff; }
+    .event-card:first-of-type { margin-top: 0; }
+    .event-card-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .event-card-heading h3 { margin: 0; font-size: 1.08rem; }
+    .event-toggle { display: inline-flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; }
+    .event-fields[hidden] { display: none; }
+    .action {
       min-height: 44px;
       padding: 9px 14px;
       border: 1px solid var(--border);
@@ -76,15 +80,13 @@
       font-weight: 700;
       cursor: pointer;
     }
-    .remove-event { background: transparent; color: var(--muted); }
-    .add-event { margin-top: 12px; background: rgba(255,255,255,.05); }
     .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
-    .action { flex: 1 1 220px; background: rgba(255,255,255,.06); }
-    .action.primary { border: 0; background: linear-gradient(100deg, var(--accent), var(--accent2)); color: #141218; }
+    .action { flex: 1 1 220px; background: rgba(30,30,40,.04); }
+    .action.primary { border: 0; background: linear-gradient(100deg, var(--accent), var(--accent2)); color: #fff; }
     .action:disabled { opacity: .65; cursor: wait; }
     .status { min-height: 1.5em; margin: 14px 0 0; color: var(--muted); }
     .preview-section { margin-top: 38px; }
-    .preview-wrap { overflow-x: auto; padding: 16px; border: 1px solid var(--border); border-radius: 14px; background: #0e0e11; text-align: center; }
+    .preview-wrap { overflow-x: auto; padding: 16px; border: 1px solid var(--border); border-radius: 14px; background: #e9e9eb; text-align: center; }
     #offer-image { display: block; width: min(100%, 760px); height: auto; margin: 0 auto; }
     .preview-placeholder { padding: 50px 12px; color: var(--muted); }
     [hidden] { display: none !important; }
@@ -92,9 +94,6 @@
       body { padding: 18px 12px 36px; }
       .fields { grid-template-columns: 1fr; gap: 14px; }
       .field.full { grid-column: auto; }
-      .event-row { grid-template-columns: 1fr 1fr; }
-      .event-row .event-name { grid-column: 1 / -1; }
-      .event-row .remove-event { justify-self: start; }
       .topbar { margin-bottom: 22px; }
     }
     @media print {
@@ -121,105 +120,125 @@
 
       <form id="offer-form" class="form-card">
         <section class="form-section">
-          <h2>👰🤵 Klienti dhe banketi</h2>
+          <h2>☎️ Të dhënat e klientëve</h2>
           <div class="fields">
             <div class="field">
-              <label for="groom">Emri i dhëndrit</label>
+              <label for="groom">Emri dhe mbiemri i dhëndrit</label>
               <input id="groom" name="Dhëndri" autocomplete="off">
             </div>
             <div class="field">
-              <label for="bride">Emri i nuses</label>
+              <label for="bride">Emri dhe mbiemri i nuses</label>
               <input id="bride" name="Nusja" autocomplete="off">
             </div>
-            <div class="field">
-              <label for="banquet-date">Data e banketit</label>
-              <input id="banquet-date" name="Data e banketit" type="date">
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>📅 Eventet e dasmës</h2>
+          <p class="hint">Aktivizoni eventet që do të përfshihen në ofertë. Ato renditen sipas datës kur përgatitet oferta.</p>
+
+          <article class="event-card" data-event-card="banket">
+            <div class="event-card-heading">
+              <h3>🍽️ Banketi</h3>
+              <label class="event-toggle"><input type="checkbox" data-event-toggle checked> Përfshi në ofertë</label>
             </div>
-            <div class="field">
-              <label for="banquet-time">Ora e fillimit</label>
-              <input id="banquet-time" name="Ora e fillimit" type="time">
+            <div class="event-fields fields">
+              <div class="field"><label for="banquet-date">Data</label><input id="banquet-date" data-event-date type="date"></div>
+              <div class="field"><label for="banquet-time">Ora</label><input id="banquet-time" type="time"></div>
+              <div class="field full"><label for="banquet-location">Lokacioni / Restoranti / Salla</label><input id="banquet-location"></div>
+              <div class="field"><label for="banquet-cameras">Sa kamera</label><input id="banquet-cameras" type="number" min="0" step="1" placeholder="p.sh. 3"></div>
+              <div class="field"><label for="banquet-people">Sa persona nga ekipi</label><input id="banquet-people" type="number" min="0" step="1" placeholder="p.sh. 4"></div>
+              <div class="field full"><label for="banquet-camera-models">Cilat kamera / pajisje</label><textarea id="banquet-camera-models" placeholder="Shkruani nga një në rresht, p.sh. Sony FX3, Sony A7 IV, Dron DJI"></textarea></div>
+              <div class="field"><label for="guest-count">Kapaciteti / numri i të ftuarve</label><input id="guest-count" placeholder="p.sh. 200-250"></div>
             </div>
-            <div class="field">
-              <label for="banquet-location">Restoranti / salla</label>
-              <input id="banquet-location" name="Restoranti / salla">
+          </article>
+
+          <article class="event-card" data-event-card="marrja">
+            <div class="event-card-heading">
+              <h3>🚘 Marrja e nuses</h3>
+              <label class="event-toggle"><input type="checkbox" data-event-toggle> Përfshi në ofertë</label>
             </div>
-            <div class="field">
-              <label for="guest-count">Numri i mysafirëve</label>
-              <input id="guest-count" name="Numri i mysafirëve" placeholder="p.sh. 200-250">
+            <div class="event-fields fields" hidden>
+              <div class="field"><label for="pickup-date">Data</label><input id="pickup-date" data-event-date type="date" disabled></div>
+              <div class="field"><label for="pickup-time">Ora</label><input id="pickup-time" type="time" disabled></div>
+              <div class="field full"><label for="pickup-location">Lokacioni (dhëndri dhe nusja)</label><input id="pickup-location" disabled></div>
+              <div class="field"><label for="pickup-cameras">Sa kamera</label><input id="pickup-cameras" type="number" min="0" step="1" placeholder="p.sh. 2" disabled></div>
+              <div class="field"><label for="pickup-people">Sa persona nga ekipi</label><input id="pickup-people" type="number" min="0" step="1" placeholder="p.sh. 3" disabled></div>
+              <div class="field full"><label for="pickup-camera-models">Cilat kamera / pajisje</label><textarea id="pickup-camera-models" placeholder="Shkruani pajisjet e planifikuara" disabled></textarea></div>
+            </div>
+          </article>
+
+          <article class="event-card" data-event-card="nata">
+            <div class="event-card-heading">
+              <h3>🎉 Nata e dhëndërisë</h3>
+              <label class="event-toggle"><input type="checkbox" data-event-toggle> Përfshi në ofertë</label>
+            </div>
+            <div class="event-fields fields" hidden>
+              <div class="field"><label for="groom-night-date">Data</label><input id="groom-night-date" data-event-date type="date" disabled></div>
+              <div class="field"><label for="groom-night-time">Ora</label><input id="groom-night-time" type="time" disabled></div>
+              <div class="field full"><label for="groom-night-location">Lokacioni</label><input id="groom-night-location" disabled></div>
+              <div class="field"><label for="groom-night-cameras">Sa kamera</label><input id="groom-night-cameras" type="number" min="0" step="1" placeholder="p.sh. 2" disabled></div>
+              <div class="field"><label for="groom-night-people">Sa persona nga ekipi</label><input id="groom-night-people" type="number" min="0" step="1" placeholder="p.sh. 3" disabled></div>
+              <div class="field full"><label for="groom-night-camera-models">Cilat kamera / pajisje</label><textarea id="groom-night-camera-models" placeholder="Shkruani pajisjet e planifikuara" disabled></textarea></div>
+            </div>
+          </article>
+
+          <article class="event-card" data-event-card="kanagjegji">
+            <div class="event-card-heading">
+              <h3>🌸 Kanagjegji i nuses</h3>
+              <label class="event-toggle"><input type="checkbox" data-event-toggle> Përfshi në ofertë</label>
+            </div>
+            <div class="event-fields fields" hidden>
+              <div class="field"><label for="kanagjegj-date">Data</label><input id="kanagjegj-date" data-event-date type="date" disabled></div>
+              <div class="field"><label for="kanagjegj-time">Ora</label><input id="kanagjegj-time" type="time" disabled></div>
+              <div class="field full"><label for="kanagjegj-location">Lokacioni</label><input id="kanagjegj-location" disabled></div>
+              <div class="field"><label for="kanagjegj-cameras">Sa kamera</label><input id="kanagjegj-cameras" type="number" min="0" step="1" placeholder="p.sh. 2" disabled></div>
+              <div class="field"><label for="kanagjegj-people">Sa persona nga ekipi</label><input id="kanagjegj-people" type="number" min="0" step="1" placeholder="p.sh. 3" disabled></div>
+              <div class="field full"><label for="kanagjegj-camera-models">Cilat kamera / pajisje</label><textarea id="kanagjegj-camera-models" placeholder="Shkruani pajisjet e planifikuara" disabled></textarea></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="form-section">
+          <h2>✨ Shërbimet dhe kushtet</h2>
+          <div class="fields">
+            <div class="field full">
+              <label for="services">Shërbimet e përfshira në banket</label>
+              <textarea id="services" name="Shërbimet" placeholder="Shkruani nga një shërbim në rresht, p.sh. Filmimi, fotografimi, fotosesioni, Love-Story, Reels"></textarea>
+            </div>
+            <div class="field full">
+              <label for="offer-notes">Shënime dhe kushte</label>
+              <textarea id="offer-notes" name="Shënime" placeholder="Shkruani kushtet ose detajet e ofertës..."></textarea>
             </div>
           </div>
         </section>
 
         <section class="form-section">
-          <h2>🎥 Kamerat dhe pajisjet</h2>
+          <h2>💶 Llogaritja e ofertës</h2>
           <div class="fields">
             <div class="field">
-              <label for="camera-count">Numri i kamerave</label>
-              <input id="camera-count" name="Numri i kamerave" type="number" min="0" step="1" placeholder="p.sh. 3">
-            </div>
-            <div class="field">
-              <label for="crew-count">Numri i operatorëve</label>
-              <input id="crew-count" name="Numri i operatorëve" type="number" min="0" step="1" placeholder="p.sh. 3">
-            </div>
-            <div class="field full">
-              <label for="equipment">Pajisjet që do të përdoren</label>
-              <textarea id="equipment" name="Pajisjet" placeholder="Shkruani nga një pajisje në rresht, p.sh.&#10;Sony FX3&#10;Kamerë Sony A7 IV&#10;Dron DJI&#10;Kran / Gimbal"></textarea>
-              <p class="hint">Shënoni modelet e kamerave dhe pajisjet që keni planifikuar për këtë event.</p>
-            </div>
-          </div>
-        </section>
-
-        <section class="form-section">
-          <h2>📅 Eventet e tjera</h2>
-          <p class="hint">Shtoni marrjen e nuses, natën e dhëndërisë, kanagjegjin ose evente të tjera.</p>
-          <div id="events-list"></div>
-          <button id="add-event" class="add-event" type="button">+ Shto event</button>
-        </section>
-
-        <section class="form-section">
-          <h2>✨ Shërbimet dhe oferta</h2>
-          <div class="fields">
-            <div class="field full">
-              <label for="services">Shërbimet e përfshira</label>
-              <textarea id="services" name="Shërbimet" placeholder="Shkruani nga një shërbim në rresht, p.sh.&#10;Filmimi i banketit&#10;Fotografimi i eventit&#10;Foto sesion&#10;Love-Story trailer&#10;Reels gjatë banketit"></textarea>
-            </div>
-            <div class="field">
-              <label for="price">Çmimi i përgjithshëm <span aria-hidden="true">*</span></label>
-              <div class="money-field">
-                <input id="price" name="Çmimi i përgjithshëm" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="p.sh. 1200" required>
-                <span class="currency">EUR (€)</span>
-              </div>
+              <label for="price">Çmimi i përgjithshëm (EUR) *</label>
+              <input id="price" type="number" min="0.01" step="0.01" inputmode="decimal" required>
             </div>
             <fieldset class="field">
-              <legend style="display:block;margin-bottom:7px;font-weight:700">A ka lirim? <span aria-hidden="true">*</span></legend>
+              <legend style="display:block;margin-bottom:7px;font-weight:700">A ka lirim? *</legend>
               <div class="radio-options">
                 <label class="radio-choice"><input type="radio" name="Ka lirim" value="Po" required> Po</label>
                 <label class="radio-choice"><input type="radio" name="Ka lirim" value="Jo" required> Jo</label>
               </div>
             </fieldset>
             <div id="discount-field" class="field" hidden>
-              <label for="discount">Shuma e lirimit</label>
-              <div class="money-field">
-                <input id="discount" name="Shuma e lirimit" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="p.sh. 100" disabled>
-                <span class="currency">EUR (€)</span>
-              </div>
+              <label for="discount">Shuma e lirimit (EUR)</label>
+              <input id="discount" type="number" min="0.01" step="0.01" inputmode="decimal" disabled>
             </div>
             <div class="field">
-              <label for="advance">Para-pagesa (nëse ka)</label>
-              <div class="money-field">
-                <input id="advance" name="Para-pagesa" type="number" min="0" step="0.01" inputmode="decimal" placeholder="p.sh. 200">
-                <span class="currency">EUR (€)</span>
-              </div>
+              <label for="advance">Para-pagesa (EUR)</label>
+              <input id="advance" type="number" min="0" step="0.01" inputmode="decimal">
             </div>
-            <div class="field full">
-              <div id="price-calculation" class="calculation" aria-live="polite">
-                <p>Çmimi pas lirimit: <strong id="discounted-price">—</strong></p>
-                <p>Pagesa e mbetur: <strong id="remaining-payment">—</strong></p>
-              </div>
-            </div>
-            <div class="field full">
-              <label for="offer-notes">Shënime ose kushte të ofertës</label>
-              <textarea id="offer-notes" name="Shënime" placeholder="Detaje shtesë, mënyra e pagesës, afati i vlefshmërisë së ofertës..."></textarea>
+            <div class="field full calculation" aria-live="polite">
+              <p>Çmimi pas lirimit: <strong id="discounted-price">—</strong></p>
+              <p>Pagesa e mbetur: <strong id="remaining-payment">—</strong></p>
+              <p class="hint">Shumat llogariten për ju; në ofertën e printuar lihen bosh që t’i plotësoni me dorë.</p>
             </div>
           </div>
         </section>
@@ -243,27 +262,8 @@
     </main>
   </div>
 
-  <template id="event-template">
-    <div class="event-row">
-      <div class="event-name">
-        <label>Emri i eventit</label>
-        <input data-event-field="name" placeholder="p.sh. Marrja e nuses">
-      </div>
-      <div>
-        <label>Data dhe ora</label>
-        <input data-event-field="date" placeholder="p.sh. 15.06.2027, 12:00">
-      </div>
-      <div>
-        <label>Lokacioni</label>
-        <input data-event-field="location" placeholder="Lokacioni">
-      </div>
-      <button class="remove-event" type="button" aria-label="Hiq eventin">Hiq</button>
-    </div>
-  </template>
-
   <script>
     const form = document.getElementById('offer-form');
-    const eventsList = document.getElementById('events-list');
     const offerImage = document.getElementById('offer-image');
     const status = document.getElementById('status');
     const downloadButton = document.getElementById('download-image');
@@ -271,49 +271,16 @@
     let offerBlob = null;
     let imageUrl = null;
 
-    function addEventRow() {
-      const row = document.getElementById('event-template').content.firstElementChild.cloneNode(true);
-      row.querySelector('.remove-event').addEventListener('click', () => row.remove());
-      eventsList.append(row);
-    }
-
-    document.getElementById('add-event').addEventListener('click', addEventRow);
-    addEventRow();
-
-    function readOffer() {
-      const value = (id) => document.getElementById(id).value.trim();
-      const date = value('banquet-date');
-      const events = [...eventsList.querySelectorAll('.event-row')].map((row) => ({
-        name: row.querySelector('[data-event-field="name"]').value.trim(),
-        date: row.querySelector('[data-event-field="date"]').value.trim(),
-        location: row.querySelector('[data-event-field="location"]').value.trim()
-      })).filter((event) => event.name || event.date || event.location);
-
-      const totalPrice = Number(value('price'));
-      const discountSelected = form.querySelector('input[name="Ka lirim"]:checked')?.value === 'Po';
-      const discount = discountSelected ? Number(value('discount')) : 0;
-      const advance = Number(value('advance')) || 0;
-      return {
-        groom: value('groom'),
-        bride: value('bride'),
-        banquetDate: date ? new Date(`${date}T12:00:00`).toLocaleDateString('sq-AL') : '',
-        banquetTime: value('banquet-time'),
-        banquetLocation: value('banquet-location'),
-        guestCount: value('guest-count'),
-        cameraCount: value('camera-count'),
-        crewCount: value('crew-count'),
-        equipment: value('equipment'),
-        events,
-        services: value('services'),
-        totalPrice,
-        hasDiscount: discountSelected,
-        discount,
-        finalPrice: totalPrice - discount,
-        advance,
-        remaining: totalPrice - discount - advance,
-        notes: value('offer-notes')
-      };
-    }
+    document.querySelectorAll('[data-event-card]').forEach((card) => {
+      const toggle = card.querySelector('[data-event-toggle]');
+      const fields = card.querySelector('.event-fields');
+      toggle.addEventListener('change', () => {
+        fields.hidden = !toggle.checked;
+        fields.querySelectorAll('input, textarea').forEach((input) => {
+          input.disabled = !toggle.checked;
+        });
+      });
+    });
 
     function formatEuro(amount) {
       return new Intl.NumberFormat('sq-MK', {
@@ -324,23 +291,27 @@
       }).format(amount);
     }
 
+    function formatDate(dateValue) {
+      const date = dateValue instanceof Date
+        ? dateValue
+        : new Date(`${dateValue}T12:00:00`);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      return `${day}.${month}.${date.getFullYear()}`;
+    }
+
     function updatePriceCalculation() {
       const total = Number(document.getElementById('price').value) || 0;
-      const discountEnabled = form.querySelector('input[name="Ka lirim"]:checked')?.value === 'Po';
+      const hasDiscount = form.querySelector('input[name="Ka lirim"]:checked')?.value === 'Po';
       const discountInput = document.getElementById('discount');
-      const discount = discountEnabled ? Number(discountInput.value) || 0 : 0;
+      const discount = hasDiscount ? Number(discountInput.value) || 0 : 0;
       const advance = Number(document.getElementById('advance').value) || 0;
       const finalPrice = Math.max(0, total - discount);
-      document.getElementById('discounted-price').textContent = total > 0
-        ? formatEuro(finalPrice)
-        : '—';
+      document.getElementById('discounted-price').textContent = total > 0 ? formatEuro(finalPrice) : '—';
       document.getElementById('remaining-payment').textContent = total > 0
         ? formatEuro(Math.max(0, finalPrice - advance))
         : '—';
-
-      discountInput.max = total > 0 ? String(total) : '';
-      document.getElementById('advance').max = finalPrice > 0 ? String(finalPrice) : '';
-      discountInput.setCustomValidity(discountEnabled && discount > total
+      discountInput.setCustomValidity(discount > total
         ? 'Lirimi nuk mund të jetë më i madh se çmimi i përgjithshëm.'
         : '');
       document.getElementById('advance').setCustomValidity(advance > finalPrice
@@ -348,21 +319,91 @@
         : '');
     }
 
-    function updateDiscountField() {
-      const discountEnabled = form.querySelector('input[name="Ka lirim"]:checked')?.value === 'Po';
-      const discountField = document.getElementById('discount-field');
-      const discountInput = document.getElementById('discount');
-      discountField.hidden = !discountEnabled;
-      discountInput.disabled = !discountEnabled;
-      discountInput.required = discountEnabled;
-      updatePriceCalculation();
-    }
-
     form.addEventListener('change', (event) => {
-      if (event.target.name === 'Ka lirim') updateDiscountField();
+      if (event.target.name === 'Ka lirim') {
+        const enabled = event.target.value === 'Po' && event.target.checked;
+        const field = document.getElementById('discount-field');
+        const discountInput = document.getElementById('discount');
+        field.hidden = !enabled;
+        discountInput.disabled = !enabled;
+        discountInput.required = enabled;
+      }
       updatePriceCalculation();
     });
     form.addEventListener('input', updatePriceCalculation);
+
+    function readOffer() {
+      const value = (id) => document.getElementById(id).value.trim();
+      const eventDefinitions = [
+        {
+          id: 'kanagjegji',
+          title: 'KANAGJEGJI I NUSES',
+          date: 'kanagjegj-date',
+          time: 'kanagjegj-time',
+          location: 'kanagjegj-location',
+          cameras: 'kanagjegj-cameras',
+          people: 'kanagjegj-people',
+          cameraModels: 'kanagjegj-camera-models'
+        },
+        {
+          id: 'nata',
+          title: 'NATA E DHËNDRISË',
+          date: 'groom-night-date',
+          time: 'groom-night-time',
+          location: 'groom-night-location',
+          cameras: 'groom-night-cameras',
+          people: 'groom-night-people',
+          cameraModels: 'groom-night-camera-models'
+        },
+        {
+          id: 'marrja',
+          title: 'MARRJA E NUSES',
+          date: 'pickup-date',
+          time: 'pickup-time',
+          location: 'pickup-location',
+          cameras: 'pickup-cameras',
+          people: 'pickup-people',
+          cameraModels: 'pickup-camera-models'
+        },
+        {
+          id: 'banket',
+          title: 'BANKETI',
+          date: 'banquet-date',
+          time: 'banquet-time',
+          location: 'banquet-location',
+          cameras: 'banquet-cameras',
+          people: 'banquet-people',
+          cameraModels: 'banquet-camera-models',
+          guestCount: 'guest-count'
+        }
+      ];
+      const events = eventDefinitions.filter((definition) => {
+        return document.querySelector(`[data-event-card="${definition.id}"] [data-event-toggle]`).checked;
+      }).map((definition, order) => ({
+        title: definition.title,
+        date: value(definition.date),
+        time: value(definition.time),
+        location: value(definition.location),
+        cameras: value(definition.cameras),
+        people: value(definition.people),
+        cameraModels: value(definition.cameraModels),
+        guestCount: definition.guestCount ? value(definition.guestCount) : '',
+        order
+      })).sort((first, second) => {
+        if (!first.date && !second.date) return first.order - second.order;
+        if (!first.date) return 1;
+        if (!second.date) return -1;
+        return first.date.localeCompare(second.date) || first.order - second.order;
+      });
+
+      return {
+        groom: value('groom'),
+        bride: value('bride'),
+        events,
+        services: value('services'),
+        notes: value('offer-notes')
+      };
+    }
 
     function wrapText(context, text, maxWidth) {
       const lines = [];
@@ -407,184 +448,194 @@
       canvas.width = width;
       canvas.height = height;
 
-      const sections = [];
-      const addSection = (title, items) => {
-        const lines = items.filter((item) => item.value).map((item) => `• ${item.label}: ${item.value}`);
-        if (lines.length) sections.push({ title, lines });
-      };
-      const listLines = (text) => text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).map((line) => `• ${line}`);
-
-      addSection('TË DHËNAT E BANKETIT', [
-        { label: 'Çifti', value: [data.groom, data.bride].filter(Boolean).join(' & ') },
-        { label: 'Data', value: data.banquetDate },
-        { label: 'Ora e fillimit', value: data.banquetTime },
-        { label: 'Restoranti / salla', value: data.banquetLocation },
-        { label: 'Numri i mysafirëve', value: data.guestCount }
-      ]);
-      addSection('EKIPI DHE PAJISJET', [
-        { label: 'Kamera', value: data.cameraCount },
-        { label: 'Operatorë', value: data.crewCount }
-      ]);
-      if (data.equipment) sections.push({ title: 'PAJISJET E PLANIFIKUARA', lines: listLines(data.equipment) });
-      if (data.events.length) {
+      const sections = data.events.map((event) => {
+        const date = event.date
+          ? formatDate(event.date)
+          : '';
+        const lines = [];
+        if (date || event.time) lines.push(`• Data: ${date || '—'}${event.time ? `   |   Ora: ${event.time}` : ''}`);
+        if (event.location) lines.push(`• Lokacioni: ${event.location}`);
+        if (event.cameras || event.people) {
+          lines.push(`• Kamera: ${event.cameras || '—'}${event.people ? `   |   Persona nga ekipi: ${event.people}` : ''}`);
+        }
+        const cameraModels = event.cameraModels.split(/\r?\n/).map((item) => item.trim()).filter(Boolean);
+        if (cameraModels.length) lines.push(`• Kamerat / pajisjet: ${cameraModels.join(', ')}`);
+        if (event.guestCount) lines.push(`• Numri i të ftuarve: ${event.guestCount}`);
+        return { title: `TË DHËNAT E ${event.title}`, lines };
+      });
+      if (data.services) {
         sections.push({
-          title: 'EVENTET E TJERA',
-          lines: data.events.map((event) => `• ${[event.name, event.date, event.location].filter(Boolean).join(' — ')}`)
+          title: 'SHËRBIMET E PËRFSHIRA NË BANKET',
+          lines: data.services.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).map((line) => `• ${line}`)
         });
       }
-      if (data.services) sections.push({ title: 'SHËRBIMET E PËRFSHIRA', lines: listLines(data.services) });
-      if (data.notes) sections.push({ title: 'SHËNIME DHE KUSHTE', lines: wrapText(context, data.notes, contentWidth - 64) });
-
-      const priceCardHeight = data.hasDiscount ? 202 : 158;
-      const signatureAndPaymentHeight = 226;
-      const gratitude = 'Faleminderit që na besuat për ditën tuaj të veçantë. Ju urojmë momente të mbushura me gëzim, dashuri dhe kujtime të paharrueshme.';
-      context.font = '20px Arial, sans-serif';
-      const gratitudeLines = wrapText(context, gratitude, contentWidth - 40);
-      const sectionGap = 14;
-      const contentStart = 365;
-      const contentEnd = height - 60;
-      let fontSize = 24;
+      if (data.notes) {
+        sections.push({
+          title: 'SHËNIME DHE KUSHTE',
+          lines: wrapText(context, data.notes, contentWidth - 64)
+        });
+      }
+      const signatureAndPaymentsHeight = 230;
+      const priceHeight = 172;
+      const footerGap = 22;
+      const contentStart = 305;
+      const contentBottom = height - signatureAndPaymentsHeight - priceHeight - footerGap - 24;
+      let fontSize = 29;
       let sectionLayouts;
-      while (fontSize >= 14) {
-        const lineHeight = fontSize + 12;
+      let requiredContentHeight = 0;
+      while (fontSize >= 19) {
+        const bodyLineHeight = fontSize + 14;
+        const headingHeight = fontSize + 30;
         context.font = `${fontSize}px Arial, sans-serif`;
         sectionLayouts = sections.map((section) => {
-          const lines = section.lines.flatMap((line) => wrapText(context, line, contentWidth - 64));
+          const wrappedLines = section.lines.flatMap((line) => wrapText(context, line, contentWidth - 54));
           return {
             ...section,
-            wrappedLines: lines,
-            height: 54 + lines.length * lineHeight + 24
+            wrappedLines,
+            height: headingHeight + wrappedLines.length * bodyLineHeight + 20
           };
         });
-        const requiredHeight = sectionLayouts.reduce((total, section) => total + section.height, 0) +
-          Math.max(0, sectionLayouts.length - 1) * sectionGap +
-          18 + priceCardHeight + 18 + signatureAndPaymentHeight - 24 + 32 + gratitudeLines.length * 28 + 10;
-        if (contentStart + requiredHeight <= contentEnd) break;
+        const sectionGap = 13;
+        requiredContentHeight = sectionLayouts.reduce((sum, section) => sum + section.height, 0) +
+          Math.max(0, sectionLayouts.length - 1) * sectionGap;
+        if (contentStart + requiredContentHeight <= contentBottom) break;
         fontSize -= 1;
       }
-      if (fontSize < 14) {
-        throw new Error('Përmbajtja është shumë e gjatë për një faqe A4. Shkurtoni shënimet ose listat.');
+      if (fontSize < 19) {
+        throw new Error('Përmbajtja është shumë e gjatë për një faqe A4. Shkurtoni shënimet ose përshkrimet e pajisjeve.');
       }
-      const lineHeight = fontSize + 12;
-      const sectionsHeight = sectionLayouts.reduce((total, section) => total + section.height, 0) +
-        Math.max(0, sectionLayouts.length - 1) * sectionGap;
-      const flowHeight = sectionsHeight + 18 + priceCardHeight + 18 +
-        signatureAndPaymentHeight - 24 + 32 + gratitudeLines.length * 28 + 10;
-      const distributedGap = Math.max(0, (contentEnd - contentStart - flowHeight) / (sectionLayouts.length + 2));
-      let y = contentStart;
 
       const background = context.createLinearGradient(0, 0, width, height);
-      background.addColorStop(0, '#17151f');
-      background.addColorStop(1, '#28202f');
+      background.addColorStop(0, '#ffffff');
+      background.addColorStop(1, '#f8f7f5');
       context.fillStyle = background;
       context.fillRect(0, 0, width, height);
 
-      context.fillStyle = '#ff9a7e';
-      context.font = 'bold 54px Georgia, serif';
-      context.fillText('OFERTA', margin, 94);
-      context.fillStyle = '#ffffff';
-      context.font = 'bold 28px Arial, sans-serif';
-      context.fillText('Infinity Production', margin, 150);
-      context.fillStyle = '#d7d0de';
+      context.fillStyle = '#a85f4b';
+      context.font = 'bold 58px Georgia, serif';
+      context.fillText('OFERTA', margin, 84);
+      context.fillStyle = '#22222a';
+      context.font = 'bold 27px Arial, sans-serif';
+      context.fillText('Infinity Production', margin, 132);
       context.font = '22px Arial, sans-serif';
-      context.fillText('072-722-060', margin, 190);
-      context.fillText('www.infinity-production.com', margin, 226);
-      context.fillText('Tetovë', margin, 262);
-      context.fillStyle = '#c9c3d1';
-      context.font = '19px Arial, sans-serif';
-      context.fillText(`Data e ofertës: ${new Date().toLocaleDateString('sq-AL')}`, margin, 314);
+      context.fillText('072-722-060', margin, 168);
+      context.fillText('www.infinity-production.com', margin, 202);
+      context.fillText('Tetovë', margin, 236);
 
-      const logoMaxWidth = 230;
-      const logoMaxHeight = 220;
+      const logoMaxWidth = 200;
+      const logoMaxHeight = 160;
       const scale = Math.min(logoMaxWidth / logo.naturalWidth, logoMaxHeight / logo.naturalHeight);
       const logoWidth = logo.naturalWidth * scale;
       const logoHeight = logo.naturalHeight * scale;
-      context.drawImage(logo, width - margin - logoWidth, 50, logoWidth, logoHeight);
-      context.fillStyle = '#ff9a7e';
-      context.fillRect(margin, 340, contentWidth, 3);
+      context.drawImage(logo, width - margin - logoWidth, 30, logoWidth, logoHeight);
 
+      const rightX = width - margin - 420;
+      const rightWidth = 420;
+      context.fillStyle = '#a85f4b';
+      context.font = 'bold 21px Arial, sans-serif';
+      context.textAlign = 'right';
+      context.fillText('DATA E OFERTËS', width - margin, 194);
+      context.fillStyle = '#22222a';
+      context.font = '22px Arial, sans-serif';
+      context.fillText(formatDate(new Date()), width - margin, 224);
+      context.fillStyle = '#a85f4b';
+      context.font = 'bold 21px Arial, sans-serif';
+      context.fillText('DHËNDRI DHE NUSJA', width - margin, 256);
+      context.fillStyle = '#22222a';
+      context.font = '20px Arial, sans-serif';
+      const couple = [data.groom, data.bride].filter(Boolean).join(' & ') || '____________________________';
+      wrapText(context, couple, rightWidth).slice(0, 2).forEach((line, index) => {
+        context.fillText(line, width - margin, 282 + index * 25);
+      });
+      context.textAlign = 'left';
+      context.fillStyle = '#c7836f';
+      context.fillRect(margin, contentStart - 8, contentWidth, 3);
+
+      const sectionGap = 13;
+      const availableForSections = contentBottom - contentStart;
+      const distributedGap = sectionLayouts.length > 1
+        ? Math.max(0, (availableForSections - requiredContentHeight) / (sectionLayouts.length - 1))
+        : 0;
+      let y = contentStart;
       sectionLayouts.forEach((section) => {
-        context.fillStyle = 'rgba(255,255,255,.075)';
+        context.fillStyle = '#f4f1ef';
         context.beginPath();
-        context.roundRect(margin, y, contentWidth, section.height, 18);
+        context.roundRect(margin, y, contentWidth, section.height, 14);
         context.fill();
-        context.fillStyle = '#ffb09b';
+        context.strokeStyle = '#e4dad6';
+        context.lineWidth = 1;
+        context.stroke();
+        context.fillStyle = '#a85f4b';
         context.font = `bold ${fontSize + 2}px Arial, sans-serif`;
-        context.fillText(section.title, margin + 30, y + 38);
-        context.fillStyle = '#ffffff';
+        context.fillText(section.title, margin + 22, y + fontSize + 9);
+        context.fillStyle = '#22222a';
         context.font = `${fontSize}px Arial, sans-serif`;
+        const bodyLineHeight = fontSize + 14;
         section.wrappedLines.forEach((line, index) => {
-          context.fillText(line, margin + 32, y + 68 + index * lineHeight);
+          context.fillText(line, margin + 24, y + fontSize + 34 + index * bodyLineHeight);
         });
         y += section.height + sectionGap + distributedGap;
       });
 
-      if (sectionLayouts.length) y -= sectionGap + distributedGap;
-      const priceY = y + 18 + distributedGap;
-      context.fillStyle = 'rgba(255,255,255,.09)';
+      const footerY = height - signatureAndPaymentsHeight - priceHeight - 42;
+      const priceY = footerY;
+      context.fillStyle = '#f4f1ef';
       context.beginPath();
-      context.roundRect(margin, priceY, contentWidth, priceCardHeight, 18);
+      context.roundRect(margin, priceY, contentWidth, priceHeight, 14);
       context.fill();
-      context.fillStyle = '#ffb09b';
+      context.strokeStyle = '#e4dad6';
+      context.stroke();
+      context.fillStyle = '#a85f4b';
       context.font = 'bold 27px Arial, sans-serif';
-      context.fillText('ÇMIMI I PËRGJITHSHËM', margin + 30, priceY + 42);
-      context.fillStyle = '#ffffff';
+      context.fillText('ÇMIMI I PËRGJITHSHËM', margin + 24, priceY + 40);
+      context.fillStyle = '#22222a';
       context.font = '24px Arial, sans-serif';
-      context.fillText(`Çmimi i përgjithshëm: ${formatEuro(data.totalPrice)}`, margin + 32, priceY + 82);
-      if (data.hasDiscount) {
-        context.fillText(`Lirimi: −${formatEuro(data.discount)}`, margin + 32, priceY + 118);
-        context.fillStyle = '#ffb09b';
-        context.font = 'bold 29px Arial, sans-serif';
-        context.fillText(`Çmimi me lirim: ${formatEuro(data.finalPrice)}`, margin + 32, priceY + 164);
-      } else {
-        context.fillStyle = '#ffb09b';
-        context.font = 'bold 29px Arial, sans-serif';
-        context.fillText(`Çmimi përfundimtar: ${formatEuro(data.finalPrice)}`, margin + 32, priceY + 128);
-      }
+      context.fillText('Çmimi i përgjithshëm: ____________________ €', margin + 24, priceY + 78);
+      context.fillText('Lirimi: ____________________ €', margin + 24, priceY + 114);
+      context.fillText('Çmimi pas lirimit: ____________________ €', margin + 24, priceY + 150);
 
-      const lowerY = priceY + priceCardHeight + 18 + distributedGap;
-      const columnGap = 24;
-      const columnWidth = (contentWidth - columnGap) / 2;
-      const paymentX = margin + columnWidth + columnGap;
-      const columnHeight = signatureAndPaymentHeight - 24;
-      context.fillStyle = 'rgba(255,255,255,.06)';
+      const columnsY = priceY + priceHeight + footerGap;
+      const gap = 28;
+      const columnWidth = (contentWidth - gap) / 2;
+      const paymentX = margin + columnWidth + gap;
+      const columnHeight = 140;
+      context.fillStyle = '#f4f1ef';
       context.beginPath();
-      context.roundRect(margin, lowerY, columnWidth, columnHeight, 18);
-      context.roundRect(paymentX, lowerY, columnWidth, columnHeight, 18);
+      context.roundRect(margin, columnsY, columnWidth, columnHeight, 14);
+      context.roundRect(paymentX, columnsY, columnWidth, columnHeight, 14);
       context.fill();
-
-      context.fillStyle = '#ffb09b';
-      context.font = 'bold 23px Arial, sans-serif';
-      context.fillText('NËNSHKRIMET', margin + 24, lowerY + 38);
-      context.fillStyle = '#ffffff';
-      context.font = '21px Arial, sans-serif';
-      context.fillText('Nënshkrimi nga: Jeton Elezi', margin + 24, lowerY + 76);
-      context.strokeStyle = 'rgba(255,255,255,.6)';
-      context.lineWidth = 2;
-      context.beginPath();
-      context.moveTo(margin + 24, lowerY + 112);
-      context.lineTo(margin + columnWidth - 24, lowerY + 112);
-      context.stroke();
-      context.fillText('Nënshkrimi i klientit', margin + 24, lowerY + 154);
-      context.beginPath();
-      context.moveTo(margin + 24, lowerY + 190);
-      context.lineTo(margin + columnWidth - 24, lowerY + 190);
+      context.strokeStyle = '#e4dad6';
       context.stroke();
 
-      context.fillStyle = '#ffb09b';
-      context.font = 'bold 23px Arial, sans-serif';
-      context.fillText('PAGESAT', paymentX + 24, lowerY + 38);
-      context.fillStyle = '#ffffff';
-      context.font = '22px Arial, sans-serif';
-      context.fillText(`Para-pagesa: ${formatEuro(data.advance)}`, paymentX + 24, lowerY + 88);
-      context.fillText(`Pagesa e mbetur: ${formatEuro(data.remaining)}`, paymentX + 24, lowerY + 138);
-
-      context.fillStyle = '#c9c3d1';
+      context.fillStyle = '#a85f4b';
+      context.font = 'bold 24px Arial, sans-serif';
+      context.fillText('NËNSHKRIMET', margin + 22, columnsY + 34);
+      context.fillStyle = '#22222a';
       context.font = '20px Arial, sans-serif';
+      context.fillText('Nënshkrimi nga: Jeton Elezi', margin + 22, columnsY + 66);
+      context.fillText('Nënshkrimi i klientit', margin + 22, columnsY + 112);
+      context.strokeStyle = '#8b8b92';
+      context.beginPath();
+      context.moveTo(margin + 22, columnsY + 82);
+      context.lineTo(margin + columnWidth - 22, columnsY + 82);
+      context.moveTo(margin + 22, columnsY + 128);
+      context.lineTo(margin + columnWidth - 22, columnsY + 128);
+      context.stroke();
+
+      context.fillStyle = '#a85f4b';
+      context.font = 'bold 24px Arial, sans-serif';
+      context.fillText('PAGESAT', paymentX + 22, columnsY + 34);
+      context.fillStyle = '#22222a';
+      context.font = '20px Arial, sans-serif';
+      context.fillText('Para-pagesa: ____________________ €', paymentX + 22, columnsY + 76);
+      context.fillText('Pagesa e mbetur: ________________ €', paymentX + 22, columnsY + 120);
+
+      context.fillStyle = '#55545b';
+      context.font = '21px Arial, sans-serif';
       context.textAlign = 'center';
-      const gratitudeY = lowerY + columnHeight + 32 + distributedGap;
+      const gratitudeLines = wrapText(context, 'Faleminderit që na besuat për ditën tuaj të veçantë. Ju urojmë momente të mbushura me gëzim, dashuri dhe kujtime të paharrueshme.', contentWidth - 30);
       gratitudeLines.forEach((line, index) => {
-        context.fillText(line, width / 2, gratitudeY + 22 + index * 28);
+        context.fillText(line, width / 2, height - 50 - (gratitudeLines.length - 1 - index) * 28);
       });
       return canvas;
     }
