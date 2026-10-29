@@ -554,7 +554,10 @@
         events,
         guestArrangement: form.querySelector('input[name="Organizimi i të ftuarve"]:checked').value,
         services: value('services'),
-        notes: value('offer-notes')
+        notes: value('offer-notes'),
+        totalPrice: Number(value('price')),
+        hasDiscount: form.querySelector('input[name="Ka lirim"]:checked').value === 'Po',
+        discountAmount: Number(value('discount')) || 0
       };
     }
 
@@ -635,7 +638,7 @@
       const contentStart = 305;
       const fontSize = 29;
       const bodyLineHeight = fontSize + 14;
-      const headingHeight = fontSize + 30;
+      const headingHeight = fontSize + 52;
       const sectionGap = 13;
       const contentBottom = height - signatureAndPaymentsHeight - priceHeight - footerGap - 52;
       const availableContentHeight = contentBottom - contentStart;
@@ -743,10 +746,16 @@
           pageContext.fillStyle = '#a85f4b';
           pageContext.font = `bold ${fontSize + 2}px Arial, sans-serif`;
           pageContext.fillText(section.title, margin + 22, y + fontSize + 9);
+          pageContext.strokeStyle = '#d8cbc5';
+          pageContext.lineWidth = 2;
+          pageContext.beginPath();
+          pageContext.moveTo(margin + 22, y + fontSize + 25);
+          pageContext.lineTo(margin + contentWidth - 22, y + fontSize + 25);
+          pageContext.stroke();
           pageContext.fillStyle = '#22222a';
           pageContext.font = `${fontSize}px Arial, sans-serif`;
           section.wrappedLines.forEach((line, index) => {
-            pageContext.fillText(line, margin + 24, y + fontSize + 34 + index * bodyLineHeight);
+            pageContext.fillText(line, margin + 24, y + fontSize + 58 + index * bodyLineHeight);
           });
           y += section.height + sectionGap;
         });
@@ -764,9 +773,11 @@
           pageContext.fillText('ÇMIMI I PËRGJITHSHËM', margin + 24, priceY + 40);
           pageContext.fillStyle = '#22222a';
           pageContext.font = '24px Arial, sans-serif';
-          pageContext.fillText('Çmimi i përgjithshëm: ____________________ €', margin + 24, priceY + 78);
-          pageContext.fillText('Lirimi: ____________________ €', margin + 24, priceY + 114);
-          pageContext.fillText('Çmimi pas lirimit: ____________________ €', margin + 24, priceY + 150);
+          pageContext.fillText(`Çmimi i përgjithshëm: ${formatEuro(data.totalPrice)}`, margin + 24, priceY + 78);
+          if (data.hasDiscount) {
+            pageContext.fillText(`Lirimi: ${formatEuro(data.discountAmount)}`, margin + 24, priceY + 114);
+            pageContext.fillText(`Çmimi pas lirimit: ${formatEuro(Math.max(0, data.totalPrice - data.discountAmount))}`, margin + 24, priceY + 150);
+          }
 
           const columnsY = priceY + priceHeight + footerGap;
           const gap = 28;
