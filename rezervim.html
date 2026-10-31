@@ -92,6 +92,55 @@
       cursor: pointer;
     }
     .choice input { width: 17px; min-height: 17px; height: 17px; margin: 0; accent-color: var(--accent); }
+    .equipment-slot { margin-top: 20px; }
+    .equipment-picker { margin: 0; }
+    .equipment-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+    .equipment-option {
+      display: grid;
+      grid-template-columns: 1fr;
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--field);
+      cursor: pointer;
+    }
+    .equipment-select {
+      display: grid;
+      grid-template-columns: 18px 56px 1fr;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      cursor: pointer;
+    }
+    .equipment-option.is-selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+    .equipment-select input[type="checkbox"] {
+      width: 18px;
+      min-height: 18px;
+      height: 18px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      accent-color: var(--accent);
+    }
+    .equipment-icon {
+      display: grid;
+      width: 56px;
+      height: 48px;
+      place-items: center;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .equipment-icon img { width: 100%; height: 100%; object-fit: contain; }
+    .equipment-name { font-weight: 700; }
+    .equipment-quantity { grid-column: 1 / -1; }
+    .equipment-quantity[hidden] { display: none; }
+    .equipment-quantity label { margin-bottom: 4px; font-size: .85rem; }
     .hint { margin: 7px 0 0; color: var(--muted); font-size: .9rem; }
     .conditional { margin-top: 18px; }
     .submit-row { margin-top: 28px; }
@@ -184,7 +233,7 @@
               <fieldset class="field full">
                 <legend>A keni planifikuar të bëni banket në restorant? <span class="required">*</span></legend>
                 <div class="choice-list">
-                  <label class="choice"><input type="radio" name="Banket në restorant" value="Po, kemi planifikuar" checked required disabled> Po, kemi planifikuar</label>
+                  <label class="choice"><input type="radio" name="Banket në restorant" value="Po, kemi planifikuar" required disabled> Po, kemi planifikuar</label>
                   <label class="choice"><input type="radio" name="Banket në restorant" value="Jo" required disabled> Jo</label>
                 </div>
               </fieldset>
@@ -211,12 +260,13 @@
                     </select>
                   </div>
                 </div>
+                <div class="equipment-slot" data-equipment-slot="Banketi"></div>
               </div>
 
               <fieldset class="field full">
                 <legend>A keni planifikuar marrjen e nuses? <span class="required">*</span></legend>
                 <div class="choice-list">
-                  <label class="choice"><input type="radio" name="Marrja e nuses" value="Po, kemi planifikuar" checked required disabled> Po, kemi planifikuar</label>
+                  <label class="choice"><input type="radio" name="Marrja e nuses" value="Po, kemi planifikuar" required disabled> Po, kemi planifikuar</label>
                   <label class="choice"><input type="radio" name="Marrja e nuses" value="Jo" required disabled> Jo</label>
                 </div>
               </fieldset>
@@ -239,12 +289,13 @@
                     <input id="pickup-time" name="Ora e marrjes së nuses" type="time" required disabled>
                   </div>
                 </div>
+                <div class="equipment-slot" data-equipment-slot="Marrja e nuses"></div>
               </div>
 
               <fieldset class="field full">
                 <legend>A keni planifikuar natën e dhëndërisë? <span class="required">*</span></legend>
                 <div class="choice-list">
-                  <label class="choice"><input type="radio" name="Nata e dhëndërisë" value="Po" checked required disabled> Po</label>
+                  <label class="choice"><input type="radio" name="Nata e dhëndërisë" value="Po" required disabled> Po</label>
                   <label class="choice"><input type="radio" name="Nata e dhëndërisë" value="Jo" required disabled> Jo</label>
                 </div>
               </fieldset>
@@ -263,12 +314,13 @@
                     <input id="groom-night-time" name="Ora e natës së dhëndërisë" type="time" required disabled>
                   </div>
                 </div>
+                <div class="equipment-slot" data-equipment-slot="Nata e dhëndërisë"></div>
               </div>
 
               <fieldset class="field full">
                 <legend>A keni planifikuar kanagjegjin e nuses? <span class="required">*</span></legend>
                 <div class="choice-list">
-                  <label class="choice"><input type="radio" name="Kanagjegji i nuses" value="Po" checked required disabled> Po</label>
+                  <label class="choice"><input type="radio" name="Kanagjegji i nuses" value="Po" required disabled> Po</label>
                   <label class="choice"><input type="radio" name="Kanagjegji i nuses" value="Jo" required disabled> Jo</label>
                 </div>
               </fieldset>
@@ -287,6 +339,7 @@
                     <input id="kanagjegj-time" name="Ora e kanagjegjit" type="time" required disabled>
                   </div>
                 </div>
+                <div class="equipment-slot" data-equipment-slot="Kanagjegji"></div>
               </div>
             </div>
           </section>
@@ -378,6 +431,11 @@
             </div>
           </section>
           <section class="form-section">
+            <h2 class="section-heading">📷 Pajisjet e eventit</h2>
+            <p class="hint">Zgjedhja e pajisjeve është opsionale.</p>
+            <div class="equipment-slot" data-equipment-slot="Syneti"></div>
+          </section>
+          <section class="form-section">
             <h2 class="section-heading">🪑 Të ftuarit <span class="required">*</span></h2>
             <fieldset>
               <legend>Si dëshironi të organizohen të ftuarit?</legend>
@@ -421,6 +479,11 @@
             </div>
           </section>
           <section class="form-section">
+            <h2 class="section-heading">📷 Pajisjet e eventit</h2>
+            <p class="hint">Zgjedhja e pajisjeve është opsionale.</p>
+            <div class="equipment-slot" data-equipment-slot="Fejesa"></div>
+          </section>
+          <section class="form-section">
             <h2 class="section-heading">🪑 Të ftuarit <span class="required">*</span></h2>
             <fieldset>
               <legend>Si dëshironi të organizohen të ftuarit?</legend>
@@ -455,6 +518,55 @@
     const eventType = document.getElementById('event-type');
     const eventChoices = document.querySelectorAll('[data-event-choice]');
     const eventPanels = document.querySelectorAll('[data-event-panel]');
+    const equipment = [
+      { name: 'Kamer', image: 'Kamera.png' },
+      { name: 'Foto-Aparat', image: 'Aparati.png' },
+      { name: 'Kran', image: 'Krani.png' },
+      { name: 'Gimbal', image: '217e4161ba59686dd4b0ef051abb3344@origin.png' },
+      { name: 'Dron', image: 'Droni.png' }
+    ];
+
+    function renderEquipmentPickers() {
+      document.querySelectorAll('[data-equipment-slot]').forEach((slot) => {
+        const slotName = slot.dataset.equipmentSlot;
+        const slotId = slotName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        slot.innerHTML = `
+          <fieldset class="equipment-picker" data-equipment-picker="${slotName}" data-summary-label="Pajisjet - ${slotName}">
+            <legend>Zgjidhni pajisjet për ${slotName} (opsionale)</legend>
+            <div class="equipment-list">
+              ${equipment.map((item, index) => {
+                const id = `equipment-${slotId}-${index}`;
+                const icon = `<img src="${item.image}" alt="">`;
+                return `
+                  <div class="equipment-option">
+                    <label class="equipment-select" for="${id}">
+                      <input id="${id}" type="checkbox" name="Pajisjet - ${slotName}" value="${item.name}" data-equipment-control data-equipment-toggle>
+                      <span class="equipment-icon">${icon}</span>
+                      <span class="equipment-name">${item.name}</span>
+                    </label>
+                    <div class="equipment-quantity" hidden>
+                      <label for="${id}-quantity">Sasia e ${item.name}</label>
+                      <input id="${id}-quantity" type="number" name="Sasia - ${item.name} - ${slotName}" min="1" step="1" value="1" data-equipment-control data-equipment-quantity>
+                    </div>
+                  </div>`;
+              }).join('')}
+            </div>
+          </fieldset>`;
+      });
+    }
+
+    function updateEquipmentQuantities() {
+      document.querySelectorAll('.equipment-option').forEach((option) => {
+        const toggle = option.querySelector('[data-equipment-toggle]');
+        const quantity = option.querySelector('[data-equipment-quantity]');
+        const quantityField = quantity.closest('.equipment-quantity');
+        const active = toggle.checked && !toggle.disabled;
+        option.classList.toggle('is-selected', active);
+        quantityField.hidden = !active;
+        quantity.disabled = !active;
+        quantity.required = active;
+      });
+    }
 
     function updateConditionals() {
       document.querySelectorAll('[data-show-if]').forEach((section) => {
@@ -470,6 +582,7 @@
           input.disabled = !visible;
         });
       });
+      updateEquipmentQuantities();
     }
 
     function chooseEvent(type) {
@@ -498,12 +611,15 @@
       button.addEventListener('click', () => chooseEvent(button.dataset.eventChoice));
     });
 
+    renderEquipmentPickers();
     form.addEventListener('change', updateConditionals);
+    updateEquipmentQuantities();
 
     function getRequestDetails() {
       const details = [];
       Array.from(form.elements).forEach((control) => {
         if (!control.name || control.disabled || control.type === 'submit' || control.type === 'button') return;
+        if (control.hasAttribute('data-equipment-control')) return;
         if ((control.type === 'checkbox' || control.type === 'radio') && !control.checked) return;
 
         const label = control.dataset.summaryLabel || control.name;
@@ -511,6 +627,17 @@
           ? control.options[control.selectedIndex].text
           : control.value.trim();
         if (value) details.push({ label, value });
+      });
+      document.querySelectorAll('[data-equipment-picker]').forEach((picker) => {
+        const selected = Array.from(picker.querySelectorAll('[data-equipment-toggle]:checked'))
+          .filter((toggle) => !toggle.disabled)
+          .map((toggle) => {
+            const quantity = toggle.closest('.equipment-option').querySelector('[data-equipment-quantity]');
+            return `${toggle.value}: ${quantity.value}`;
+          });
+        if (selected.length) {
+          details.push({ label: picker.dataset.summaryLabel, value: selected.join(', ') });
+        }
       });
       return details;
     }
@@ -544,6 +671,7 @@
             'Emri i djalit', 'Emri i babait', 'Emri i nënës'
           ]),
           ...section('📅 TË DHËNAT E EVENTIT', ['Lokacioni', 'Data', 'Ora']),
+          ...section('📷 PAJISJET', ['Pajisjet - Syneti']),
           ...section('🪑 TË FTUARIT', ['Organizimi i të ftuarve']),
           ...section('📝 INFORMACION SHTESË', ['Informacion shtesë']),
           'Faleminderit!'
@@ -561,6 +689,7 @@
             'Data e fejesës',
             'Ora e fejesës'
           ]),
+          ...section('📷 PAJISJET', ['Pajisjet - Fejesa']),
           ...section('🪑 TË FTUARIT', ['Organizimi i të ftuarve']),
           ...section('📝 INFORMACION SHTESË', ['Informacion shtesë']),
           'Faleminderit!'
@@ -584,26 +713,30 @@
           'Data e banketit',
           'Restoranti / salla',
           'Koha e fillimit të banketit',
-          'Numri i mysafirëve'
+          'Numri i mysafirëve',
+          'Pajisjet - Banketi'
         ]),
         ...section('🚘 MARRJA E NUSES', [
           'Marrja e nuses',
           'Lokacioni i dhëndrit',
           'Lokacioni i nuses',
           'Data e marrjes së nuses',
-          'Ora e marrjes së nuses'
+          'Ora e marrjes së nuses',
+          'Pajisjet - Marrja e nuses'
         ]),
         ...section('🎉 NATA E DHËNDRISË', [
           'Nata e dhëndërisë',
           'Lokacioni i natës së dhëndërisë',
           'Data e natës së dhëndërisë',
-          'Ora e natës së dhëndërisë'
+          'Ora e natës së dhëndërisë',
+          'Pajisjet - Nata e dhëndërisë'
         ]),
         ...section('🌸 KANAGJEGJI I NUSES', [
           'Kanagjegji i nuses',
           'Lokacioni i kanagjegjit',
           'Data e kanagjegjit',
-          'Ora e kanagjegjit'
+          'Ora e kanagjegjit',
+          'Pajisjet - Kanagjegji'
         ]),
         ...section('✨ SHËRBIME TË VEÇANTA', [
           'Shërbimet e veçanta',
