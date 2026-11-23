@@ -96,6 +96,12 @@
         }
         .login-box h2 { margin-bottom: 20px; font-family: 'Playfair Display', serif; color: #1a1a1a; }
         .login-box input { margin-bottom: 20px; text-align: center; font-size: 1.2rem; letter-spacing: 2px; }
+        .role-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; }
+        .role-tabs button { border: 1px solid #ddd; background: #f7f7f7; color: #555; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .role-tabs button.active { background: #1a1a1a; color: #d4af37; border-color: #1a1a1a; }
+        .login-box input { margin-bottom: 12px; }
+        .login-box .worker-fields { display: none; }
+        .login-role-label { color: #777; font-size: 0.85rem; margin-bottom: 8px; }
 
         /* MODAL PËR MODIFIKIM */
         .modal-overlay {
@@ -110,9 +116,21 @@
         .flex-btns { display: flex; gap: 10px; margin-top: 10px; }
         .btn-cancel { background: #888; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; flex: 1; font-weight: 600;}
         .btn-cancel:hover { background: #666; }
+        .btn-secondary { background: #1a1a1a; color: #d4af37; border: none; padding: 10px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .staff-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+        .staff-card { border: 1px solid #ddd; border-radius: 8px; padding: 12px; background: #fff; }
+        .staff-card.selected { border-color: #d4af37; background: #fffaf0; }
+        .staff-card label { display: block; cursor: pointer; }
+        .staff-card input[type="text"] { margin-top: 8px; }
+        .staff-list-item { display: flex; justify-content: space-between; align-items: center; gap: 15px; border-bottom: 1px solid #eee; padding: 12px 0; }
+        .staff-list-item:last-child { border-bottom: none; }
+        .staff-list-item strong { display: block; }
+        .staff-list-item span { color: #777; font-size: 0.85rem; }
+        .staff-list-item button { width: auto; min-width: 80px; }
+        .hidden-admin { display: none; }
 
         /* Ndarjet e fshehura fillimisht */
-        #app-screen, #view-section, #add-section { display: none; }
+        #app-screen, #view-section, #add-section, #staff-section, #settings-section { display: none; }
 
         footer { text-align: center; padding: 20px; margin-top: 40px; color: #888; font-size: 0.9rem; }
         footer a { color: #d4af37; text-decoration: none; }
@@ -123,10 +141,15 @@
     <div id="login-screen">
         <div class="login-box">
             <h2>Infinity Production</h2>
-            <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Shëno fjalëkalimin për të hyrë</p>
-            <input type="password" id="login-password" placeholder="***" onkeypress="handleEnter(event)">
+            <div class="role-tabs">
+                <button id="role-admin" class="active" type="button" onclick="zgjedhRolin('admin')">Admin</button>
+                <button id="role-worker" type="button" onclick="zgjedhRolin('worker')">Puntor</button>
+            </div>
+            <p id="login-role-label" class="login-role-label">Hyrje si administrator</p>
+            <input type="text" id="login-username" placeholder="Username" onkeypress="handleEnter(event)">
+            <input type="password" id="login-password" placeholder="Password" onkeypress="handleEnter(event)">
             <button class="btn-primary" onclick="kontrolloHyrjen()">Hyr</button>
-            <p id="login-error" style="color: red; font-size: 0.85rem; margin-top: 10px; display: none;">Fjalëkalim i pasaktë!</p>
+            <p id="login-error" style="color: red; font-size: 0.85rem; margin-top: 10px; display: none;">Të dhënat e hyrjes janë të pasakta!</p>
         </div>
     </div>
 
@@ -136,7 +159,9 @@
             <nav>
                 <ul>
                     <li><a id="nav-view" onclick="ndryshoFaqen('view')" class="active">Shiko Terminet</a></li>
-                    <li><a id="nav-add" onclick="ndryshoFaqen('add')">Shto Termin <span style="font-size:0.7rem;">🔒</span></a></li>
+                    <li class="admin-nav"><a id="nav-add" onclick="ndryshoFaqen('add')">Shto Termin</a></li>
+                    <li class="admin-nav"><a id="nav-staff" onclick="ndryshoFaqen('staff')">Puntorët</a></li>
+                    <li class="admin-nav"><a id="nav-settings" onclick="ndryshoFaqen('settings')">Cilësimet</a></li>
                     <li><button class="btn-logout" onclick="dil()">Dil</button></li>
                 </ul>
             </nav>
@@ -146,6 +171,7 @@
             <div id="add-section" class="card">
                 <h2>Shto Termin të Ri</h2>
                 <form id="termin-form">
+                    <div class="form-group"><label>Numri i Eventit</label><input type="text" id="numri-eventit" placeholder="P.sh. EVT-101"></div>
                     <div class="form-group"><label>Çifti</label><input type="text" id="cifti" required></div>
                     <div class="form-group">
                         <label>Lloji i Eventit</label>
@@ -164,8 +190,12 @@
                     <div class="form-group"><label>Lokacioni</label><input type="text" id="lokacioni" required></div>
                     <div class="form-group"><label>Pajisjet</label><input type="text" id="pajisjet" required></div>
                     <div class="form-group"><label>Çmimi Total (€)</label><input type="number" id="cmimi" required></div>
-                    <div class="form-group"><label>Stafi</label><input type="text" id="puntoret" required></div>
                     <div class="form-group"><label>Shënime</label><textarea id="pershkrimi" rows="3"></textarea></div>
+                    <div class="form-group">
+                        <label>Puntorët</label>
+                        <button type="button" class="btn-secondary" onclick="hapModalStafin('add')">Zgjidh Stafin</button>
+                        <div id="selected-staff-add" style="margin-top:10px;"></div>
+                    </div>
                     <button type="submit" class="btn-primary">Ruaj në Databazë</button>
                 </form>
             </div>
@@ -173,6 +203,28 @@
             <div id="view-section" class="card">
                 <h2>Lista e Termineve</h2>
                 <div id="termin-list" class="termin-list"></div>
+            </div>
+
+            <div id="staff-section" class="card">
+                <h2>Puntorët në Sistem</h2>
+                <div id="staff-view-list" class="staff-grid"></div>
+            </div>
+
+            <div id="settings-section" class="card">
+                <h2>Cilësimet e Puntorëve</h2>
+                <form id="staff-form">
+                    <input type="hidden" id="staff-edit-id">
+                    <div class="form-group"><label>Emri i Puntorit</label><input type="text" id="staff-name" required></div>
+                    <div class="form-group"><label>Username</label><input type="text" id="staff-username" required></div>
+                    <div class="form-group"><label id="staff-password-label">Password</label><input type="password" id="staff-password" required></div>
+                    <div class="form-group"><label>Numri i Telefonit</label><input type="tel" id="staff-phone" required></div>
+                    <button type="submit" id="staff-submit" class="btn-primary">Shto Puntorin</button>
+                    <button type="button" id="staff-cancel-edit" onclick="anuloModifikiminPuntorit()" class="btn-cancel" style="display:none; margin-top:8px; width:100%;">Anulo Modifikimin</button>
+                </form>
+                <div style="margin-top:25px;">
+                    <h3>Puntorët e regjistruar</h3>
+                    <div id="staff-settings-list"></div>
+                </div>
             </div>
         </div>
 
@@ -186,6 +238,7 @@
             <h3>Modifiko Terminin</h3>
             <form id="edit-form">
                 <input type="hidden" id="edit-id">
+                <div class="form-group"><label>Numri i Eventit</label><input type="text" id="edit-numri-eventit"></div>
                 <div class="form-group"><label>Çifti</label><input type="text" id="edit-cifti"></div>
                 <div class="form-group">
                     <label>Lloji</label>
@@ -203,13 +256,28 @@
                 <div class="form-group"><label>Lokacioni</label><input type="text" id="edit-lokacioni"></div>
                 <div class="form-group"><label>Pajisjet</label><input type="text" id="edit-pajisjet"></div>
                 <div class="form-group"><label>Çmimi</label><input type="number" id="edit-cmimi"></div>
-                <div class="form-group"><label>Stafi</label><input type="text" id="edit-puntoret"></div>
                 <div class="form-group"><label>Shënime</label><textarea id="edit-pershkrimi"></textarea></div>
+                <div class="form-group">
+                    <label>Puntorët</label>
+                    <button type="button" class="btn-secondary" onclick="hapModalStafin('edit')">Zgjidh Stafin</button>
+                    <div id="selected-staff-edit" style="margin-top:10px;"></div>
+                </div>
                 <div class="flex-btns">
                     <button type="submit" class="btn-primary">Ruaj</button>
                     <button type="button" onclick="mbyllModalin()" class="btn-cancel">Anulo</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div id="staff-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Zgjidh Puntorët</h3>
+            <div id="staff-modal-list" class="staff-grid"></div>
+            <div class="flex-btns">
+                <button type="button" class="btn-primary" onclick="ruajZgjedhjenStafit()">Ruaj Zgjedhjen</button>
+                <button type="button" class="btn-cancel" onclick="mbyllModalStafi()">Anulo</button>
+            </div>
         </div>
     </div>
 
@@ -228,36 +296,96 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         let terminetArray = [];
+        let puntoretArray = [];
         let currentRole = null;
+        let currentLoginRole = 'admin';
+        let currentWorker = null;
+        let selectedStaff = { add: [], edit: [] };
+        let staffModalMode = 'add';
 
         function handleEnter(e) { if (e.key === 'Enter') kontrolloHyrjen(); }
 
-        function kontrolloHyrjen() {
-            const pass = document.getElementById('login-password').value;
-            if (pass === '123') { currentRole = 'viewer'; hapAplikacionin('view'); }
-            else if (pass === 'jeton555!') { currentRole = 'admin'; hapAplikacionin('view'); }
-            else { document.getElementById('login-error').style.display = 'block'; }
+        function zgjedhRolin(role) {
+            currentLoginRole = role;
+            document.getElementById('role-admin').className = role === 'admin' ? 'active' : '';
+            document.getElementById('role-worker').className = role === 'worker' ? 'active' : '';
+            document.getElementById('login-role-label').innerText = role === 'admin' ? 'Hyrje si administrator' : 'Hyrje si puntor';
+        }
+
+        async function hashoPassword(password) {
+            if (window.crypto && crypto.subtle) {
+                const bytes = new TextEncoder().encode(password);
+                const hash = await crypto.subtle.digest('SHA-256', bytes);
+                return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+            }
+            let hash = 2166136261;
+            for (let i = 0; i < password.length; i++) {
+                hash ^= password.charCodeAt(i);
+                hash = Math.imul(hash, 16777619);
+            }
+            return ('fallback-' + (hash >>> 0).toString(16));
+        }
+
+        async function kontrolloHyrjen() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            const error = document.getElementById('login-error');
+            error.style.display = 'none';
+
+            if (currentLoginRole === 'admin') {
+                if (username === 'jeton01' && password === 'Toni555!') {
+                    currentRole = 'admin';
+                    currentWorker = null;
+                    hapAplikacionin('view');
+                } else {
+                    error.style.display = 'block';
+                }
+                return;
+            }
+
+            const snap = await db.collection('puntoret')
+                .where('username', '==', username.toLowerCase())
+                .limit(1)
+                .get();
+
+            if (snap.empty) {
+                error.style.display = 'block';
+                return;
+            }
+
+            const doc = snap.docs[0];
+            const worker = { id: doc.id, ...doc.data() };
+            const passwordHash = await hashoPassword(password);
+            if (worker.passwordHash === passwordHash) {
+                currentRole = 'worker';
+                currentWorker = worker;
+                hapAplikacionin('view');
+            } else {
+                error.style.display = 'block';
+            }
         }
 
         function hapAplikacionin(faqja) {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app-screen').style.display = 'block';
+            document.querySelectorAll('.admin-nav').forEach(el => el.style.display = currentRole === 'admin' ? 'list-item' : 'none');
             ndryshoFaqen(faqja);
             lexoNgaFirebase();
+            if (currentRole === 'admin') lexoPuntoret();
         }
 
         function dil() { location.reload(); }
 
         function ndryshoFaqen(faqja) {
-            if(faqja === 'add' && currentRole !== 'admin') { 
-                const p = prompt("Fjalekalimi i Adminit:");
-                if(p === 'jeton555!') currentRole = 'admin';
-                else return;
-            }
+            if (currentRole !== 'admin' && ['add', 'staff', 'settings'].includes(faqja)) return;
             document.getElementById('view-section').style.display = (faqja === 'view' ? 'block' : 'none');
             document.getElementById('add-section').style.display = (faqja === 'add' ? 'block' : 'none');
+            document.getElementById('staff-section').style.display = (faqja === 'staff' ? 'block' : 'none');
+            document.getElementById('settings-section').style.display = (faqja === 'settings' ? 'block' : 'none');
             document.getElementById('nav-view').className = (faqja === 'view' ? 'active' : '');
             document.getElementById('nav-add').className = (faqja === 'add' ? 'active' : '');
+            document.getElementById('nav-staff').className = (faqja === 'staff' ? 'active' : '');
+            document.getElementById('nav-settings').className = (faqja === 'settings' ? 'active' : '');
         }
 
         function lexoNgaFirebase() {
@@ -268,22 +396,59 @@
             });
         }
 
+        function escapeHtml(value) {
+            const div = document.createElement('div');
+            div.innerText = value == null ? '' : String(value);
+            return div.innerHTML;
+        }
+
+        function lexoPuntoret() {
+            db.collection("puntoret").onSnapshot((snap) => {
+                puntoretArray = [];
+                snap.forEach(doc => puntoretArray.push({id: doc.id, ...doc.data()}));
+                shfaqPuntoret();
+            });
+        }
+
+        function formatoDataOra(dataOra) {
+            const [date, time] = dataOra.split('T');
+            const [year, month, day] = date.split('-');
+            return `${day}/${month}/${year}${time ? ` ${time}` : ''}`;
+        }
+
         function shfaqTerminet() {
             const list = document.getElementById('termin-list');
             list.innerHTML = '';
             terminetArray.sort((a,b) => new Date(a.dataOra) - new Date(b.dataOra));
 
-            terminetArray.forEach((t, i) => {
+            const visibleEvents = currentRole === 'worker'
+                ? terminetArray.filter(t => (t.staffAssignments || []).some(s => s.staffId === currentWorker.id))
+                : terminetArray;
+
+            if (!visibleEvents.length) {
+                list.innerHTML = '<p>Nuk ka evente të caktuara për këtë puntor.</p>';
+                return;
+            }
+
+            visibleEvents.forEach((t, i) => {
                 const div = document.createElement('div');
                 div.className = 'termin-item';
                 if(i === 0) div.style.borderLeft = "8px solid #e74c3c";
+                const myAssignment = (t.staffAssignments || []).find(s => s.staffId === (currentWorker && currentWorker.id));
+                const staffText = (t.staffAssignments || []).map(s =>
+                    `${escapeHtml(s.name)}${s.position ? ` (${escapeHtml(s.position)})` : ''}`
+                ).join(', ');
+                const fallbackStaff = escapeHtml(t.puntoret || '');
+
                 div.innerHTML = `
                     <div class="termin-info">
-                        <h3>${t.cifti} ${i === 0 ? '<span style="font-size:0.7rem; background:#e74c3c; color:white; padding:2px 6px; border-radius:4px;">RADHËS</span>' : ''}</h3>
-                        <p>🎉 ${t.lloji} | 📅 ${t.dataOra.replace('T', ' ')}</p>
+                        <h3>${escapeHtml(t.cifti)} ${i === 0 ? '<span style="font-size:0.7rem; background:#e74c3c; color:white; padding:2px 6px; border-radius:4px;">RADHËS</span>' : ''}</h3>
+                        <p>🎉 ${t.lloji} | 📅 ${formatoDataOra(t.dataOra)}</p>
                         <p>📍 ${t.lokacioni} | 🎥 ${t.pajisjet}</p>
-                        <p>👥 ${t.puntoret}</p>
-                        <p class="price" onclick="zbuloCmimin(this, '${t.cmimi}')">💶: <span class="cmimi-vlere">***</span></p>
+                        ${currentRole === 'admin' ? `<p>🔢 Numri: ${escapeHtml(t.numriEventit || '-')}</p>` : ''}
+                        ${staffText || fallbackStaff ? `<p>👥 ${staffText || fallbackStaff}</p>` : ''}
+                        ${currentRole === 'worker' && myAssignment && myAssignment.position ? `<p>📌 Pozicioni juaj: ${escapeHtml(myAssignment.position)}</p>` : ''}
+                        ${currentRole === 'admin' ? `<p>💶 Cmimi: ${escapeHtml(t.cmimi)} €</p>` : ''}
                         <p class="countdown">${merrKojenEMbetur(t.dataOra)}</p>
                         ${t.pershkrimi ? `<div class="notes">${t.pershkrimi}</div>` : ''}
                     </div>
@@ -305,39 +470,25 @@
             return `⏳ Edhe ${dite} ditë, ${ore} orë`;
         }
 
-       window.zbuloCmimin = function(el, pr) {
-    // Kërkojmë fjalëkalimin
-    const pass = prompt("Fjalëkalimi:");
-    
-    if (pass === "jeton555!") {
-        // Gjejmë span-in brenda elementit ku kemi klikuar
-        const span = el.querySelector('.cmimi-vlere');
-        
-        if (span) {
-            span.innerText = pr + " €";
-            span.style.color = "#27ae60"; // Ngjyrë e gjelbër kur zbulohet
-        } else {
-            // Nëse për ndonjë arsye span-i nuk gjendet, e shkruajmë direkt në paragraf
-            el.innerHTML = `💶: <span class="cmimi-vlere" style="color: #27ae60;">${pr} €</span>`;
-        }
-    } else if (pass !== null) {
-        alert("I pasaktë!");
-    }
-};
-
         document.getElementById('termin-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const data = {
+                numriEventit: document.getElementById('numri-eventit').value.trim(),
                 cifti: document.getElementById('cifti').value,
                 lloji: document.getElementById('lloji').value,
                 dataOra: document.getElementById('data-ora').value,
                 lokacioni: document.getElementById('lokacioni').value,
                 pajisjet: document.getElementById('pajisjet').value,
                 cmimi: document.getElementById('cmimi').value,
-                puntoret: document.getElementById('puntoret').value,
+                staffAssignments: selectedStaff.add,
                 pershkrimi: document.getElementById('pershkrimi').value
             };
-            db.collection("terminet").add(data).then(() => ndryshoFaqen('view'));
+            db.collection("terminet").add(data).then(() => {
+                document.getElementById('termin-form').reset();
+                selectedStaff.add = [];
+                shfaqSelectedStaff('add');
+                ndryshoFaqen('view');
+            });
         });
 
         window.fshijTermin = (id) => { if(confirm("Fshij?")) db.collection("terminet").doc(id).delete(); };
@@ -345,30 +496,212 @@
         window.hapModifikimin = (id) => {
             const t = terminetArray.find(x => x.id === id);
             document.getElementById('edit-id').value = id;
+            document.getElementById('edit-numri-eventit').value = t.numriEventit || '';
             document.getElementById('edit-cifti').value = t.cifti;
             document.getElementById('edit-lloji').value = t.lloji;
             document.getElementById('edit-data-ora').value = t.dataOra;
             document.getElementById('edit-lokacioni').value = t.lokacioni;
             document.getElementById('edit-pajisjet').value = t.pajisjet;
             document.getElementById('edit-cmimi').value = t.cmimi;
-            document.getElementById('edit-puntoret').value = t.puntoret;
             document.getElementById('edit-pershkrimi').value = t.pershkrimi || '';
+            selectedStaff.edit = (t.staffAssignments || []).map(s => ({ ...s }));
+            shfaqSelectedStaff('edit');
             document.getElementById('edit-modal').style.display = 'flex';
         };
 
         function mbyllModalin() { document.getElementById('edit-modal').style.display = 'none'; }
 
+        function hapModalStafin(mode) {
+            staffModalMode = mode;
+            const list = document.getElementById('staff-modal-list');
+            list.innerHTML = puntoretArray.length ? '' : '<p>Aktualisht nuk ka puntorë të regjistruar.</p>';
+
+            puntoretArray.forEach(staff => {
+                const existing = selectedStaff[mode].find(s => s.staffId === staff.id);
+                const card = document.createElement('div');
+                card.className = 'staff-card' + (existing ? ' selected' : '');
+                card.dataset.staffId = staff.id;
+                card.innerHTML = `
+                    <label>
+                        <input type="checkbox" class="staff-check" ${existing ? 'checked' : ''}>
+                        <strong>${escapeHtml(staff.name)}</strong>
+                        <span>${escapeHtml(staff.phone)}</span>
+                    </label>
+                    <input type="text" class="staff-position" placeholder="Pozicioni / detyra" value="${escapeHtml(existing ? existing.position : '')}">
+                `;
+                const checkbox = card.querySelector('.staff-check');
+                checkbox.addEventListener('change', () => card.classList.toggle('selected', checkbox.checked));
+                list.appendChild(card);
+            });
+            document.getElementById('staff-modal').style.display = 'flex';
+        }
+
+        function mbyllModalStafi() {
+            document.getElementById('staff-modal').style.display = 'none';
+        }
+
+        function ruajZgjedhjenStafit() {
+            const cards = document.querySelectorAll('#staff-modal-list .staff-card');
+            selectedStaff[staffModalMode] = [];
+            cards.forEach(card => {
+                const checkbox = card.querySelector('.staff-check');
+                if (!checkbox.checked) return;
+                const staff = puntoretArray.find(p => p.id === card.dataset.staffId);
+                if (!staff) return;
+                selectedStaff[staffModalMode].push({
+                    staffId: staff.id,
+                    name: staff.name,
+                    position: card.querySelector('.staff-position').value.trim()
+                });
+            });
+            shfaqSelectedStaff(staffModalMode);
+            mbyllModalStafi();
+        }
+
+        function shfaqSelectedStaff(mode) {
+            const target = document.getElementById(mode === 'add' ? 'selected-staff-add' : 'selected-staff-edit');
+            if (!selectedStaff[mode].length) {
+                target.innerHTML = '<span style="color:#777;">Asnjë puntor i zgjedhur.</span>';
+                return;
+            }
+            target.innerHTML = selectedStaff[mode].map((staff, index) => `
+                <div class="staff-list-item">
+                    <div><strong>${escapeHtml(staff.name)}</strong><span>${escapeHtml(staff.position || 'Pa pozicion')}</span></div>
+                    <button type="button" class="btn-delete" onclick="hiqPuntorin('${mode}', ${index})">Hiq</button>
+                </div>
+            `).join('');
+        }
+
+        window.hiqPuntorin = (mode, index) => {
+            selectedStaff[mode].splice(index, 1);
+            shfaqSelectedStaff(mode);
+        };
+
+        function shfaqPuntoret() {
+            const staffView = document.getElementById('staff-view-list');
+            const settingsList = document.getElementById('staff-settings-list');
+            if (!puntoretArray.length) {
+                staffView.innerHTML = '<p>Asnjë puntor nuk është shtuar ende.</p>';
+                settingsList.innerHTML = '<p>Asnjë puntor nuk është shtuar ende.</p>';
+                return;
+            }
+            staffView.innerHTML = puntoretArray.map(staff => `
+                <div class="staff-card">
+                    <strong>${escapeHtml(staff.name)}</strong>
+                    <p>@${escapeHtml(staff.username)}</p>
+                    <p>📞 ${escapeHtml(staff.phone)}</p>
+                </div>
+            `).join('');
+            settingsList.innerHTML = puntoretArray.map(staff => `
+                <div class="staff-list-item">
+                    <div><strong>${escapeHtml(staff.name)}</strong><span>@${escapeHtml(staff.username)} · ${escapeHtml(staff.phone)}</span></div>
+                    <div style="display:flex; gap:6px;">
+                        <button type="button" class="btn-edit" style="margin:0;" onclick="modifikoPuntorin('${staff.id}')">Modifiko</button>
+                        <button type="button" class="btn-delete" style="width:auto;" onclick="fshijPuntorin('${staff.id}')">Fshi</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('staff-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('staff-edit-id').value;
+            const name = document.getElementById('staff-name').value.trim();
+            const username = document.getElementById('staff-username').value.trim().toLowerCase();
+            const password = document.getElementById('staff-password').value;
+            const phone = document.getElementById('staff-phone').value.trim();
+
+            const existing = await db.collection('puntoret').where('username', '==', username).limit(1).get();
+            if (!existing.empty && (!editId || existing.docs[0].id !== editId)) {
+                alert('Ky username është përdorur tashmë.');
+                return;
+            }
+
+            const data = {
+                name,
+                username,
+                phone
+            };
+            if (!editId || password) data.passwordHash = await hashoPassword(password);
+
+            if (editId) {
+                await db.collection('puntoret').doc(editId).update(data);
+                await azhornoEmrinNeEvente(editId, name);
+                alert('Të dhënat e puntorit u përditësuan.');
+            } else {
+                data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                await db.collection('puntoret').add(data);
+                alert('Puntori u shtua me sukses.');
+            }
+            anuloModifikiminPuntorit();
+        });
+
+        window.modifikoPuntorin = (id) => {
+            const staff = puntoretArray.find(p => p.id === id);
+            if (!staff) return;
+            document.getElementById('staff-edit-id').value = id;
+            document.getElementById('staff-name').value = staff.name;
+            document.getElementById('staff-username').value = staff.username;
+            document.getElementById('staff-password').value = '';
+            document.getElementById('staff-password').required = false;
+            document.getElementById('staff-password-label').innerText = 'Password i ri (lihet bosh për ta mbajtur të vjetër)';
+            document.getElementById('staff-phone').value = staff.phone || '';
+            document.getElementById('staff-submit').innerText = 'Ruaj Ndryshimet';
+            document.getElementById('staff-cancel-edit').style.display = 'block';
+            document.getElementById('settings-section').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        function anuloModifikiminPuntorit() {
+            document.getElementById('staff-form').reset();
+            document.getElementById('staff-edit-id').value = '';
+            document.getElementById('staff-password').required = true;
+            document.getElementById('staff-password-label').innerText = 'Password';
+            document.getElementById('staff-submit').innerText = 'Shto Puntorin';
+            document.getElementById('staff-cancel-edit').style.display = 'none';
+        }
+
+        window.fshijPuntorin = async (id) => {
+            if (!confirm('Fshi këtë puntor?')) return;
+            await heqPuntorinNgaEventet(id);
+            await db.collection('puntoret').doc(id).delete();
+            anuloModifikiminPuntorit();
+            alert('Puntori u fshi.');
+        };
+
+        async function azhornoEmrinNeEvente(staffId, name) {
+            const updates = terminetArray
+                .filter(t => (t.staffAssignments || []).some(s => s.staffId === staffId))
+                .map(t => {
+                    const assignments = t.staffAssignments.map(s =>
+                        s.staffId === staffId ? { ...s, name } : s
+                    );
+                    return db.collection('terminet').doc(t.id).update({ staffAssignments: assignments });
+                });
+            await Promise.all(updates);
+        }
+
+        async function heqPuntorinNgaEventet(staffId) {
+            const updates = terminetArray
+                .filter(t => (t.staffAssignments || []).some(s => s.staffId === staffId))
+                .map(t => {
+                    const assignments = t.staffAssignments.filter(s => s.staffId !== staffId);
+                    return db.collection('terminet').doc(t.id).update({ staffAssignments: assignments });
+                });
+            await Promise.all(updates);
+        }
+
         document.getElementById('edit-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const id = document.getElementById('edit-id').value;
             const data = {
+                numriEventit: document.getElementById('edit-numri-eventit').value.trim(),
                 cifti: document.getElementById('edit-cifti').value,
                 lloji: document.getElementById('edit-lloji').value,
                 dataOra: document.getElementById('edit-data-ora').value,
                 lokacioni: document.getElementById('edit-lokacioni').value,
                 pajisjet: document.getElementById('edit-pajisjet').value,
                 cmimi: document.getElementById('edit-cmimi').value,
-                puntoret: document.getElementById('edit-puntoret').value,
+                staffAssignments: selectedStaff.edit,
                 pershkrimi: document.getElementById('edit-pershkrimi').value
             };
             db.collection("terminet").doc(id).update(data).then(() => mbyllModalin());
