@@ -73,6 +73,8 @@
         
         .notes { background: #eee; padding: 10px; border-radius: 4px; margin-top: 10px; font-size: 0.9rem; font-style: italic; }
         .countdown { color: #d84315; font-weight: 600; margin-top: 12px; font-size: 1rem; }
+        .event-row { display: block; margin-bottom: 5px; }
+        .staff-row { display: block; margin-bottom: 4px; }
         
         .btn-delete { background-color: #ff4757; color: white; border: none; padding: 8px 15px; font-size: 0.85rem; border-radius: 4px; cursor: pointer; transition: 0.3s; width: 100%;}
         .btn-delete:hover { background-color: #ff6b81; }
@@ -139,6 +141,12 @@
 
         footer { text-align: center; padding: 20px; margin-top: 40px; color: #888; font-size: 0.9rem; }
         footer a { color: #d4af37; text-decoration: none; }
+
+        @media (max-width: 700px) {
+            .termin-item { flex-direction: column; }
+            .admin-actions { margin: 15px 0 0; width: 100%; min-width: 0; }
+            .staff-whatsapp-list { display: grid; grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -485,9 +493,9 @@
                 div.className = 'termin-item';
                 if(i === 0) div.style.borderLeft = "8px solid #e74c3c";
                 const myAssignment = (t.staffAssignments || []).find(s => s.staffId === (currentWorker && currentWorker.id));
-                const staffText = (t.staffAssignments || []).map(s =>
-                    `${escapeHtml(s.name)}${s.position ? ` (${escapeHtml(s.position)})` : ''}`
-                ).join(', ');
+                const staffRows = (t.staffAssignments || []).map(s =>
+                    `<span class="staff-row">👤 ${escapeHtml(s.name)}${s.position ? ` — ${escapeHtml(s.position)}` : ''}</span>`
+                ).join('');
                 const fallbackStaff = escapeHtml(t.puntoret || '');
                 const whatsappButtons = currentRole === 'admin' ? (t.staffAssignments || []).map(s => {
                     const staff = puntoretArray.find(p => p.id === s.staffId);
@@ -497,13 +505,13 @@
                 div.innerHTML = `
                     <div class="termin-info">
                         <h3>${escapeHtml(t.cifti)} ${i === 0 ? '<span style="font-size:0.7rem; background:#e74c3c; color:white; padding:2px 6px; border-radius:4px;">RADHËS</span>' : ''}</h3>
-                        <p>🎉 ${t.lloji} | 📅 ${formatoDataOra(t.dataOra)}</p>
-                        <p>📍 ${t.lokacioni} | 🎥 ${t.pajisjet}</p>
-                        ${currentRole === 'admin' ? `<p>🔢 Numri: ${escapeHtml(t.numriEventit || '-')}</p>` : ''}
-                        ${staffText || fallbackStaff ? `<p>👥 ${staffText || fallbackStaff}</p>` : ''}
+                        <p><span class="event-row">🎉 ${escapeHtml(t.lloji)} | 📅 ${formatoDataOra(t.dataOra)}</span></p>
+                        <p><span class="event-row">📍 ${escapeHtml(t.lokacioni)}</span><span class="event-row">🎥 ${escapeHtml(t.pajisjet)}</span></p>
+                        ${currentRole === 'admin' ? `<p><span class="event-row">🔢 Numri: ${escapeHtml(t.numriEventit || '-')}</span></p>` : ''}
+                        ${staffRows || fallbackStaff ? `<p><strong>👥 Stafi</strong><br>${staffRows || `<span class="staff-row">${fallbackStaff}</span>`}</p>` : ''}
                         ${currentRole === 'worker' && myAssignment && myAssignment.position ? `<p>📌 Pozicioni juaj: ${escapeHtml(myAssignment.position)}</p>` : ''}
-                        ${currentRole === 'admin' ? `<p>💶 Cmimi: ${escapeHtml(t.cmimi)} €</p>` : ''}
-                        <p class="countdown">${merrKojenEMbetur(t.dataOra)}</p>
+                        ${currentRole === 'admin' ? `<p><span class="event-row">💶 Cmimi: ${escapeHtml(t.cmimi)} €</span></p>` : ''}
+                        <p class="countdown"><span class="event-row">${merrKojenEMbetur(t.dataOra)}</span></p>
                         ${t.pershkrimi ? `<div class="notes">${t.pershkrimi}</div>` : ''}
                     </div>
                     ${currentRole === 'admin' ? `
