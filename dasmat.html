@@ -80,6 +80,11 @@
         .btn-edit { background-color: #3498db; color: white; border: none; padding: 8px 15px; font-size: 0.85rem; border-radius: 4px; cursor: pointer; transition: 0.3s; width: 100%; margin-bottom: 5px;}
         .btn-edit:hover { background-color: #2980b9; }
 
+        .btn-whatsapp { background-color: #25d366; color: white; border: none; padding: 8px 15px; font-size: 0.85rem; border-radius: 4px; cursor: pointer; transition: 0.3s; width: 100%; margin-bottom: 5px; }
+        .btn-whatsapp:hover { background-color: #1da851; }
+        .staff-whatsapp-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+        .staff-whatsapp-list button { width: auto; margin: 0; }
+
         .admin-actions { margin-left: 20px; display: flex; flex-direction: column; min-width: 100px;}
 
         /* Login Screen */
@@ -402,11 +407,56 @@
             return div.innerHTML;
         }
 
+        function normalizoNumrinWhatsApp(phone) {
+            let digits = String(phone || '').replace(/\D/g, '');
+            if (!digits) return '';
+            if (digits.startsWith('389')) return digits;
+            if (digits.startsWith('+389')) digits = digits.substring(1);
+            if (digits.startsWith('0')) digits = '389' + digits.substring(1);
+            return digits;
+        }
+
+        function krijoMesazhinWhatsApp(event, staff) {
+            const assignment = (event.staffAssignments || []).find(s => s.staffId === staff.id);
+            const position = assignment && assignment.position ? `\nPozicioni: ${assignment.position}` : '';
+            const notes = event.pershkrimi ? `\nShënime: ${event.pershkrimi}` : '';
+            return `Përshëndetje ${staff.name}!\n\nJu është caktuar eventi:\nÇifti: ${event.cifti}\nLloji: ${event.lloji}\nData/Ora: ${formatoDataOra(event.dataOra)}\nLokacioni: ${event.lokacioni}\nPajisjet: ${event.pajisjet}${position}${notes}`;
+        }
+
+        window.dergoWhatsApp = (eventId, staffId) => {
+            const event = terminetArray.find(t => t.id === eventId);
+            const staff = puntoretArray.find(p => p.id === staffId);
+            if (!event || !staff) return;
+
+            const phone = normalizoNumrinWhatsApp(staff.phone);
+            if (!phone) {
+                alert(`Puntori ${staff.name} nuk ka numër telefoni.`);
+                return;
+            }
+            const url = `https://wa.me/${phone}?text=${encodeURIComponent(krijoMesazhinWhatsApp(event, staff))}`;
+            window.open(url, '_blank', 'noopener,noreferrer');
+        };
+
+        window.dergoWhatsAppTeGjithe = (eventId) => {
+            const event = terminetArray.find(t => t.id === eventId);
+            if (!event || !(event.staffAssignments || []).length) {
+                alert('Ky event nuk ka puntorë të caktuar.');
+                return;
+            }
+
+            const staffIds = event.staffAssignments.map(s => s.staffId);
+            if (!confirm(`Do të hapet WhatsApp për ${staffIds.length} puntorë. Vazhdoni?`)) return;
+            staffIds.forEach((staffId, index) => {
+                setTimeout(() => window.dergoWhatsApp(eventId, staffId), index * 350);
+            });
+        };
+
         function lexoPuntoret() {
             db.collection("puntoret").onSnapshot((snap) => {
                 puntoretArray = [];
                 snap.forEach(doc => puntoretArray.push({id: doc.id, ...doc.data()}));
                 shfaqPuntoret();
+                shfaqTerminet();
             });
         }
 
@@ -439,6 +489,10 @@
                     `${escapeHtml(s.name)}${s.position ? ` (${escapeHtml(s.position)})` : ''}`
                 ).join(', ');
                 const fallbackStaff = escapeHtml(t.puntoret || '');
+                const whatsappButtons = currentRole === 'admin' ? (t.staffAssignments || []).map(s => {
+                    const staff = puntoretArray.find(p => p.id === s.staffId);
+                    return staff ? `<button type="button" class="btn-whatsapp" onclick="dergoWhatsApp('${t.id}', '${staff.id}')">WhatsApp · ${escapeHtml(staff.name)}</button>` : '';
+                }).join('') : '';
 
                 div.innerHTML = `
                     <div class="termin-info">
@@ -454,6 +508,7 @@
                     </div>
                     ${currentRole === 'admin' ? `
                     <div class="admin-actions">
+                        ${whatsappButtons ? `<div class="staff-whatsapp-list">${whatsappButtons}</div><button type="button" class="btn-whatsapp" onclick="dergoWhatsAppTeGjithe('${t.id}')">WhatsApp · Të gjithë</button>` : ''}
                         <button class="btn-edit" onclick="hapModifikimin('${t.id}')">✏️</button>
                         <button class="btn-delete" onclick="fshijTermin('${t.id}')">🗑️</button>
                     </div>` : ''}
